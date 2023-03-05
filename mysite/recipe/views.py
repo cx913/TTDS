@@ -12,7 +12,7 @@ class SearchResultsView(ListView):
 
     def get_queryset(self):  # new
         query = self.request.GET.get("q")
-        object_list = Recipes.objects.filter(
-            Q(title=query)
+        mydata = Recipes.objects.filter(
+            title=query
         )
-        return object_list
+        return mydata
