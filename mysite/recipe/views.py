@@ -22,7 +22,7 @@ def bm25(term_freq, doc_len, doc_freq, num_docs, k1=1.2, b=0.75):
         float: The BM25 score for the term in the document.
     """
     idf = math.log((num_docs - doc_freq + 0.5) / (doc_freq + 0.5))
-    tf_weight = ((k1 + 1) * term_freq) / (k1 * ((1 - b) + (b * (doc_len / avg_doc_len))) + term_freq)
+    tf_weight = ((k1 + 1) * term_freq) / (k1 * ((1 - b) + (b * (doc_len / num_docs))) + term_freq)
     return idf * tf_weight
 
 class HomePageView(TemplateView):
