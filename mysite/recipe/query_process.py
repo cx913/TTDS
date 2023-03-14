@@ -5,6 +5,31 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
+
+def merge_dict(b, x, y):
+    z = {}
+    if b == 'AND':
+        for key, value in x.items():
+            if key in x.keys() and key in y.keys():
+                z[key] = y[key] + x[key]
+        return z
+    elif b == 'OR':
+        for key, value in x.items():
+            if key in x.keys() and key in y.keys():
+                z[key] = y[key] + x[key]
+            else:
+                z[key] = x[key]
+        for key, value in y.items():
+            if key not in z:
+                z[key] = y[key]
+        return z
+    elif b == 'NOT':
+        for key, value in x.items():
+            if key not in y.keys():
+                z[key] = x[key]
+        return z
+
+
 def bm25(term_freq, doc_len, doc_freq, num_docs, k1=1.2, b=0.75):
     """
     Calculates the BM25 score for a term in a document.
@@ -24,6 +49,7 @@ def bm25(term_freq, doc_len, doc_freq, num_docs, k1=1.2, b=0.75):
     tf_weight = ((k1 + 1) * term_freq) / (k1 * ((1 - b) + (b * (doc_len / num_docs))) + term_freq)
     return idf * tf_weight
 
+
 def term_query(term, term_freq, doc_len, doc_num):
     # Binary search is built in system address search
     address = BASE_DIR / 'doc_index' / term
@@ -33,31 +59,29 @@ def term_query(term, term_freq, doc_len, doc_num):
     except:
         print("Inverse_Index not found")
         return {}
-    bm25_scores={}
+    bm25_scores = {}
     doc_freq = len(inverse_index)
     for id in inverse_index.keys():
         bm25_scores[id] = bm25(term_freq[term][id], doc_len[id], doc_freq, doc_num)
 
-    return set(sorted(bm25_scores, reverse=True))
+    return bm25_scores
 
 
-def tree_traverse(tree):
-    # and condition
-    if tree.value == 'AND':
-        return tree_traverse(tree.left) & tree_traverse(tree.right)
-    elif tree.value == 'OR':
-        return tree_traverse(tree.left) | tree_traverse(tree.right)
-    elif isinstance(tree, str):
-        return term_query(tree)
-
-#def tree_query(query):
-    #tokens = bt.split_query(query)
-    #tree = bt.build_tree(tokens)
-    #if isinstance(s, str)
+def tree_traverse(tree, term_freq, doc_len, doc_num):
+    if isinstance(tree, str):
+        return term_query(tree, term_freq, doc_len, doc_num)
+    else:
+        return merge_dict(tree.value, tree_traverse(tree.left, term_freq, doc_len, doc_num),
+                          tree_traverse(tree.right, term_freq, doc_len, doc_num))
 
 
-# test
-# load frequency, doc lengths, doc number
+def tree_query(query, term_freq, doc_len, doc_num):
+    tokens = bt.split_query(query)
+    tree = bt.build_tree(tokens)
+    final_scores = tree_traverse(tree, term_freq, doc_len, doc_num)
+    return  final_scores
+#test
+#load frequency, doc lengths, doc number
 # term_frequency_address = BASE_DIR / 'doc_index' / 'term_frequency'
 # doc_len_address = BASE_DIR / 'doc_index' / 'doc_len'
 # num_docs = BASE_DIR / 'doc_index' / 'num_docs'
@@ -70,6 +94,7 @@ def tree_traverse(tree):
 #     doc_num = pickle.load(f)
 #
 # query = 'tomato'
-#
-# ir_list = term_query(query, term_frequency, doc_len,  doc_num)
+# c_query = 'tomato AND potato'
+# #ir_list = term_query(query, term_frequency, doc_len,  doc_num)
+# ir_list = set(sorted(tree_query(c_query, term_frequency, doc_len,  doc_num)))
 # print(ir_list)

@@ -33,7 +33,10 @@ class SearchResultsView(ListView):
         # load frequency, doc lengths, doc number
 
         if ir:
-            ir_list = qp.term_query(query, term_frequency, doc_len, doc_num)
+            if ' ' not in query:
+                ir_list = set(sorted(qp.term_query(query, term_frequency, doc_len, doc_num), reverse=True))
+            else:
+                ir_list = set(sorted(qp.tree_query(query, term_frequency, doc_len, doc_num), reverse=True))
             limit_count = 0
             limit = 20
             all_data = None
