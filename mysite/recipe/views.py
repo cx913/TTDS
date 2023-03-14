@@ -1,32 +1,27 @@
 from django.views.generic import TemplateView, ListView
-from django.db.models import Q # new
 from .models import Recipes
-from pathlib import Path
 import pickle
 import math
+from . import query_process as qp
+from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-def bm25(term_freq, doc_len, doc_freq, num_docs, k1=1.2, b=0.75):
-    """
-    Calculates the BM25 score for a term in a document.
+BASE_DIR = Path(__file__).resolve().parent
 
-    Args:
-        term_freq (int): The frequency of the term in the document.
-        doc_len (int): The length of the document in words.
-        doc_freq (int): The number of documents that contain the term.
-        num_docs (int): The total number of documents in the corpus.
-        k1 (float, optional): The k1 parameter. Default is 1.2.
-        b (float, optional): The b parameter. Default is 0.75.
+term_frequency_address = BASE_DIR / 'doc_index' / 'term_frequency'
+doc_len_address = BASE_DIR / 'doc_index' / 'doc_len'
+num_docs = BASE_DIR / 'doc_index' / 'num_docs'
 
-    Returns:
-        float: The BM25 score for the term in the document.
-    """
-    idf = math.log((num_docs - doc_freq + 0.5) / (doc_freq + 0.5))
-    tf_weight = ((k1 + 1) * term_freq) / (k1 * ((1 - b) + (b * (doc_len / num_docs))) + term_freq)
-    return idf * tf_weight
+with open(term_frequency_address, "rb") as f:
+    term_frequency = pickle.load(f)
+with open(doc_len_address, "rb") as f:
+    doc_len = pickle.load(f)
+with open(num_docs, "rb") as f:
+    doc_num = pickle.load(f)
+
 
 class HomePageView(TemplateView):
     template_name = 'recipe/home.html'
+
 
 class SearchResultsView(ListView):
     model = Recipes
@@ -35,22 +30,30 @@ class SearchResultsView(ListView):
     def get_queryset(self):  # new
         query = self.request.GET.get("q")
         ir = self.request.GET.get("ir_check")
-        if ir:
-            address = BASE_DIR / ('doc_index/' + query)
-            try:
-                with open(address, "rb") as f:
-                    ID = pickle.load(f)
-            except:
-                print("ID not found")
-                return []
+        # load frequency, doc lengths, doc number
 
-            mydata = Recipes.objects.filter(
-                id = ID.keys()
-            )
+        if ir:
+            ir_list = qp.term_query(query, term_frequency, doc_len, doc_num)
+            limit_count = 0
+            limit = 20
+            all_data = None
+            for doc_id in ir_list:
+                if limit_count == limit:
+                    break
+                if limit_count == 0:
+                    all_data = Recipes.objects.filter(
+                        id=doc_id
+                    )
+                else:
+                    data = Recipes.objects.filter(
+                        id=doc_id
+                    )
+                    all_data = all_data | data
+                limit_count += 1
+            return all_data
 
         else:
             mydata = Recipes.objects.filter(
                 title=query
             )
         return mydata
-

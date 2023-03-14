@@ -46,14 +46,16 @@ for data in dataset:
     doc_id = data['id']
 
     title = data['title']
-    instructions = ', '
+    instructions = ''
+    ingredients = ''
     for d in data['instructions']:
         instructions += d['text'] + ' '
-
+    for d in data['ingredients']:
+        ingredients += d['text'] + ' '
 #   print(title, ingredients, instructions)
 #   combine title and instructions
 
-    text = title + instructions
+    text = title + instructions + ingredients
     processed_text = preprocess(text)
     position_index = 1
 
@@ -84,7 +86,7 @@ for data in dataset:
 
     # restriction for test
     #if num_docs == 5:
-       # break
+        #break
 
 for key, value in dataset_index.items():
     with open('./doc_index/' + key, 'wb') as f:

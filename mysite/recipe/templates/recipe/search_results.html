@@ -3,6 +3,8 @@
 <ul>
   {% for recipe in object_list %}
     <li>
+        {{ recipe.title }}
+        {{ recipe.ingredients }}
         {{ recipe.instructions }}
     </li>
   {% endfor %}
