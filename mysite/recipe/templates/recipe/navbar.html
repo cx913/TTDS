@@ -1,0 +1,27 @@
+ <form class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow" id="q-form" method="post" action="{% url 'search-results' %}">
+      {#    href not implemented#}
+      {% csrf_token %}
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{% url 'home' %}"> Home</a>
+      {#    button not implemented#}
+{#      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">#}
+{#          <span class="navbar-toggler-icon"></span>#}
+{#      </button>#}
+      {#    Search bar not implemented#}
+      <input class="form-control form-control-dark w-100 rounded-0 border-0" name="q" id="search-input" placeholder="Search" aria-label="Search">
+      {#    Search button not implemented#}
+     <div class="navbar-nav">
+
+          <div class="nav-item text-nowrap">
+              <a class="nav-link px-3" href="{% url 'search-results' %}" onclick="submitResponse(this.href);return false;" id="search-icon"> Search</a>
+              <script>
+                  var submitResponse = function(url) {
+                  var form = document.getElementById('q-form');
+                  form.action = url;
+                  form.submit();
+                };
+              </script>
+
+          </div>
+      </div>
+  </form>
+

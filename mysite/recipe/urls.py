@@ -1,9 +1,8 @@
 from django.urls import path
+from . import views
 
-from .views import HomePageView, SearchResultsView
-
-app_name = 'recipe'
 urlpatterns = [
-    path("", HomePageView.as_view(), name="home"),
-    path("search/", SearchResultsView.as_view(), name="search_results")   
+    path('',  views.home, name='home'),
+    path('search_results', views.search_results, name='search-results'),
+    path('static/<path:path>', views.serve_static),
 ]
