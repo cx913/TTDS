@@ -1,9 +1,14 @@
 from django.views.generic import TemplateView, ListView
+from django.shortcuts import render
+from django.views import View
+from django.contrib.staticfiles.views import serve
+from django.http import JsonResponse
 from .models import Recipes
 import pickle
 import math
 from . import query_process as qp
 from pathlib import Path
+
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -18,9 +23,31 @@ with open(doc_len_address, "rb") as f:
 with open(num_docs, "rb") as f:
     doc_num = pickle.load(f)
 
+def home(request):
+    return render(request, 'recipe/home.html')
 
-class HomePageView(TemplateView):
-    template_name = 'recipe/home.html'
+
+
+def serve_static(request, path):
+    return serve(request, path, insecure=True)
+
+def search_results(request):
+    ctx = {}
+    if request.method == "POST":
+        q = request.POST['q']
+        # ctx['q'] = q
+        return render(request, 'recipe/search_results.html', {'q': q})
+    else:
+        query = request.POST.get('q')
+    # if query:
+    #     results = Recipe.objects.filter(title__icontains=query)
+    # else:
+    #     results = Recipe.objects.all()
+    # ctx['results'] = query.va
+        return render(request, 'recipe/search_results.html', {})
+
+# class HomePageView(TemplateView):
+#     template_name = 'recipe/home.html'
 
 
 class SearchResultsView(ListView):
@@ -60,3 +87,6 @@ class SearchResultsView(ListView):
                 title=query
             )
         return mydata
+
+
+
