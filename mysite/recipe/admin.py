@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Recipe, TokenData
+from .models import Recipes
 
 
-admin.site.register(Recipe)
-admin.site.register(TokenData)
+admin.site.register(Recipes)
+

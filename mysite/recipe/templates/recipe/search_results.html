@@ -25,8 +25,17 @@
     <p> No results found.</p>
 {% endif %}
       </div>
-
+      <ul>
+        {% for recipe in object_list %}
+          <li>
+              {{ recipe.title }}
+              {{ recipe.ingredients }}
+              {{ recipe.instructions }}
+          </li>
+        {% endfor %}
+      </ul>
 
 
 
 {% endblock %}
+
