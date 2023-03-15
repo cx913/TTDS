@@ -27,7 +27,6 @@ def home(request):
     return render(request, 'recipe/home.html')
 
 
-
 def serve_static(request, path):
     return serve(request, path, insecure=True)
 
@@ -35,16 +34,18 @@ def search_results(request):
     ctx = {}
     if request.method == "POST":
         q = request.POST['q']
-        # ctx['q'] = q
-        return render(request, 'recipe/search_results.html', {'q': q})
+        q_res = Recipes.objects.filter(title__icontains=q)
+        return render(request, 'recipe/search_results.html', {'q': q, 'res': q_res})
     else:
         query = request.POST.get('q')
-    # if query:
-    #     results = Recipe.objects.filter(title__icontains=query)
-    # else:
-    #     results = Recipe.objects.all()
-    # ctx['results'] = query.va
         return render(request, 'recipe/search_results.html', {})
+
+def show_recipe(request, recipe_id):
+    recipe = Recipes.objects.get(id=recipe_id)
+    return render(request, 'recipe/show_recipe.html', {'recipe': recipe})
+
+
+
 
 # class HomePageView(TemplateView):
 #     template_name = 'recipe/home.html'
