@@ -1,7 +1,7 @@
 import pickle
 import math
-#from . import boolean_tree as bt
-import boolean_tree as bt
+from . import boolean_tree as bt
+#import boolean_tree as bt
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -143,8 +143,15 @@ def proximity_query(term1, term2, distance, term_freq, doc_len, doc_num):
 
 def tree_traverse(tree, term_freq, doc_len, doc_num):
     if isinstance(tree, str):
-
-        return term_query(tree, term_freq, doc_len, doc_num)
+        if tree.find('"'):
+            phrase = tree.replace('"', '')
+            terms = phrase.split()
+            return phrase_query(terms, term_freq, doc_len, doc_num)
+        elif tree.find('#'):
+            terms = tree.split('#')
+            return proximity_query(terms[0], terms[1], terms[2], term_freq, doc_len, doc_num)
+        else:
+            return term_query(tree, term_freq, doc_len, doc_num)
     else:
         return merge_dict(tree.value, tree_traverse(tree.left, term_freq, doc_len, doc_num),
                           tree_traverse(tree.right, term_freq, doc_len, doc_num))
@@ -157,22 +164,22 @@ def tree_query(query, term_freq, doc_len, doc_num):
     return  final_scores
 #test
 #load frequency, doc lengths, doc number
-term_frequency_address = BASE_DIR / 'doc_index' / 'term_frequency'
-doc_len_address = BASE_DIR / 'doc_index' / 'doc_len'
-num_docs = BASE_DIR / 'doc_index' / 'num_docs'
+# term_frequency_address = BASE_DIR / 'doc_index' / 'term_frequency'
+# doc_len_address = BASE_DIR / 'doc_index' / 'doc_len'
+# num_docs = BASE_DIR / 'doc_index' / 'num_docs'
 #
-with open(term_frequency_address, "rb") as f:
-    term_frequency = pickle.load(f)
-with open(doc_len_address, "rb") as f:
-    doc_len = pickle.load(f)
-with open(num_docs, "rb") as f:
-    doc_num = pickle.load(f)
+# with open(term_frequency_address, "rb") as f:
+#     term_frequency = pickle.load(f)
+# with open(doc_len_address, "rb") as f:
+#     doc_len = pickle.load(f)
+# with open(num_docs, "rb") as f:
+#     doc_num = pickle.load(f)
 #
-term1 = 'tomato'
-term2 = 'onion'
-terms = ['fish']
+# term1 = 'tomato'
+# term2 = 'onion'
+# terms = ['fish']
 # c_query = 'tomato AND potato'
 # #ir_list = term_query(query, term_frequency, doc_len,  doc_num)
-ir_list = set(sorted(phrase_query(terms, term_frequency, doc_len,  doc_num)))
+# ir_list = set(sorted(phrase_query(terms, term_frequency, doc_len,  doc_num)))
 
-print(ir_list)
+# print(ir_list)

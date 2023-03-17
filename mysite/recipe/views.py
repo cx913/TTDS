@@ -33,9 +33,29 @@ def serve_static(request, path):
 def search_results(request):
     ctx = {}
     if request.method == "POST":
-        q = request.POST['q']
-        q_res = Recipes.objects.filter(title__icontains=q)
-        return render(request, 'recipe/search_results.html', {'q': q, 'res': q_res})
+        query = request.POST['q']
+        if ' ' not in query:
+            ir_list = set(sorted(qp.term_query(query, term_frequency, doc_len, doc_num), reverse=True))
+        else:
+            ir_list = set(sorted(qp.tree_query(query, term_frequency, doc_len, doc_num), reverse=True))
+        limit_count = 0
+        limit = 50
+        all_data = None
+        for doc_id in ir_list:
+            if limit_count == limit:
+                break
+            if limit_count == 0:
+                all_data = Recipes.objects.filter(
+                    id=doc_id
+                )
+            else:
+                data = Recipes.objects.filter(
+                    id=doc_id
+                )
+                all_data = all_data | data
+            limit_count += 1
+
+        return render(request, 'recipe/search_results.html', {'q': query, 'res': all_data})
     else:
         query = request.POST.get('q')
         return render(request, 'recipe/search_results.html', {})
@@ -57,37 +77,29 @@ class SearchResultsView(ListView):
 
     def get_queryset(self):  # new
         query = self.request.GET.get("q")
-        ir = self.request.GET.get("ir_check")
-        # load frequency, doc lengths, doc number
 
-        if ir:
-            if ' ' not in query:
-                ir_list = set(sorted(qp.term_query(query, term_frequency, doc_len, doc_num), reverse=True))
-            else:
-                ir_list = set(sorted(qp.tree_query(query, term_frequency, doc_len, doc_num), reverse=True))
-            limit_count = 0
-            limit = 20
-            all_data = None
-            for doc_id in ir_list:
-                if limit_count == limit:
-                    break
-                if limit_count == 0:
-                    all_data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                else:
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = all_data | data
-                limit_count += 1
-            return all_data
-
+        if ' ' not in query:
+            ir_list = set(sorted(qp.term_query(query, term_frequency, doc_len, doc_num), reverse=True))
         else:
-            mydata = Recipes.objects.filter(
-                title=query
-            )
-        return mydata
+            ir_list = set(sorted(qp.tree_query(query, term_frequency, doc_len, doc_num), reverse=True))
+        limit_count = 0
+        limit = 50
+        all_data = None
+        for doc_id in ir_list:
+            if limit_count == limit:
+                break
+            if limit_count == 0:
+                all_data = Recipes.objects.filter(
+                    id=doc_id
+                )
+            else:
+                data = Recipes.objects.filter(
+                    id=doc_id
+                )
+                all_data = all_data | data
+            limit_count += 1
+        return all_data
+
 
 
 
