@@ -2,6 +2,7 @@
 
 {% block content %}
 
+
      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                           <h1 class="h2">Search Results</h1>
 {#                          <div class="btn-toolbar mb-2 mb-md-0">#}
@@ -9,12 +10,55 @@
 {#                              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>#}
 {#                              <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>#}
 {#                            </div>#}
-{#                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">#}
-{#                              <span data-feather="calendar" class="align-text-bottom"></span>#}
-{#                              This week#}
-{#                            </button>#}
+
+{#                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"#}
+                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                            data-bs-toggle="collapse" data-bs-target="#nutritionfilter" aria-expanded="false" aria-controls="nutritionfilter">
+                              <span  class="align-text-bottom"></span>
+                              Nutrition Filter
+                            </button>
+
+
+{#                            <div class="accordion" id="accordionExample">#}
+{#                                <div class="accordion-item">#}
+{#                                    <h2 class="accordion-header" id="headingOne">#}
+{#                                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">#}
+{#                                        Accordion Item #1#}
+{#                                      </button>#}
+{#                                    </h2>#}
+{#                                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">#}
+{#                                      <div class="accordion-body">#}
+{#                                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.#}
+{#                                      </div>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+
                           </div>
-            {% if q %}
+                    <div class="collapse" id="nutritionfilter">
+                                   <div class="card card-body d-flex justify-content-between flex-wrap flex-md-nowrap pt-3 pb-2 mb-3 border-bottom">
+                                    <form class="mb-3 row" id="nutrition-form" method="post" action="/recipe/search_results">
+                                            <span class="col-sm-2"> Sugar: </span>
+
+                                        <div class="wrapper col-sm-10">
+                                            <div class="values">
+                                                <span id="range1">71</span>
+                                                <span> ‐ </span>
+                                                <span id="range2">170</span>
+                                            </div>
+                                            <div class="container">
+                                                <div class="slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 35.5%, rgb(50, 100, 254) 35.5%, rgb(50, 100, 254) 85%, rgb(218, 218, 229) 85%);"></div>
+                                                <input type="range" min="0" max="200" value="0" id="slider-1" oninput="slideOne()" autocompleted="">
+                                                <input type="range" min="0" max="200" value="200" id="slider-2" oninput="slideTwo()" autocompleted="">
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+
+
+    {% if q %}
         <p> Searched for {{ q }}</p>
 
 
@@ -31,15 +75,149 @@
 
 {% endif %}
       </div>
-{#      <ul>#}
-{#        {% for recipe in object_list %}#}
-{#          <li>#}
-{#              {{ recipe.title }}#}
-{#              {{ recipe.ingredients }}#}
-{#              {{ recipe.instructions }}#}
-{#          </li>#}
-{#        {% endfor %}#}
-{#      </ul>#}
+<style>
+    .wrapper{
+    position: relative;
+    width: 30vmin;
+    background-color: #ffffff;
+    padding: 0px 10px 10px 10px;
+    border-radius: 10px;
+}
+    .container{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 0px;
+}
+    input[type="range"]{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    outline: none;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    background-color: transparent;
+    pointer-events: none;
+}
+.slider-track{
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    border-radius: 5px;
+}
+input[type="range"]::-webkit-slider-runnable-track{
+    -webkit-appearance: none;
+    height: 5px;
+}
+input[type="range"]::-moz-range-track{
+    -moz-appearance: none;
+    height: 5px;
+}
+input[type="range"]::-ms-track{
+    appearance: none;
+    height: 5px;
+}
+input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    background-color: #3264fe;
+    cursor: pointer;
+    margin-top: -9px;
+    pointer-events: auto;
+    border-radius: 50%;
+}
+input[type="range"]::-moz-range-thumb{
+    -webkit-appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #3264fe;
+    pointer-events: auto;
+}
+input[type="range"]::-ms-thumb{
+    appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #3264fe;
+    pointer-events: auto;
+}
+input[type="range"]:active::-webkit-slider-thumb{
+    background-color: #ffffff;
+    border: 3px solid #3264fe;
+}
+.values{
+    background-color: #3264fe;
+    width: 30%;
+    position: relative;
+    margin: auto;
+    padding: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 16px;
+    color: #ffffff;
+}
+}
+.values:before{
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    border-top: 15px solid #3264fe;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    margin: auto;
+    bottom: 0px;
+    left: 0;
+    right: 0;
+}
+    </style>
+
+    <script>
+    window.onload = function(){
+    slideOne();
+    slideTwo();
+}
+
+let sliderOne = document.getElementById("slider-1");
+let sliderTwo = document.getElementById("slider-2");
+let displayValOne = document.getElementById("range1");
+let displayValTwo = document.getElementById("range2");
+let minGap = 0;
+let sliderTrack = document.querySelector(".slider-track");
+let sliderMaxValue = document.getElementById("slider-1").max;
+
+function slideOne(){
+    if(parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap){
+        sliderOne.value = parseInt(sliderTwo.value) - minGap;
+    }
+    displayValOne.textContent = sliderOne.value;
+    fillColor();
+}
+function slideTwo(){
+    if(parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap){
+        sliderTwo.value = parseInt(sliderOne.value) + minGap;
+    }
+    displayValTwo.textContent = sliderTwo.value;
+    fillColor();
+}
+function fillColor(){
+    percent1 = (sliderOne.value / sliderMaxValue) * 100;
+    percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+    sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
+}
+    </script>
+
 
 
 
