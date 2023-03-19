@@ -3,18 +3,19 @@ import math
 from . import boolean_tree as bt
 #import boolean_tree as bt
 from pathlib import Path
+from nltk.stem.snowball import SnowballStemmer
 
 BASE_DIR = Path(__file__).resolve().parent
 
 
 def merge_dict(b, x, y):
     z = {}
-    if b == 'AND':
+    if b == 'and':
         for key, value in x.items():
             if key in x.keys() and key in y.keys():
                 z[key] = y[key] + x[key]
         return z
-    elif b == 'OR':
+    elif b == 'or':
         for key, value in x.items():
             if key in x.keys() and key in y.keys():
                 z[key] = y[key] + x[key]
@@ -24,7 +25,7 @@ def merge_dict(b, x, y):
             if key not in z:
                 z[key] = y[key]
         return z
-    elif b == 'NOT':
+    elif b == 'not':
         for key, value in x.items():
             if key not in y.keys():
                 z[key] = x[key]
@@ -52,6 +53,9 @@ def bm25(term_freq, doc_len, doc_freq, num_docs, k1=1.2, b=0.75):
 
 
 def term_query(term, term_freq, doc_len, doc_num):
+    # temp stem, remove when merge into tree
+    stemmer = SnowballStemmer("english")
+    terms = stemmer.stem(term)
     # Binary search is built in system address search
     address = BASE_DIR / 'doc_index' / term
     try:
@@ -142,16 +146,21 @@ def proximity_query(term1, term2, distance, term_freq, doc_len, doc_num):
 
 
 def tree_traverse(tree, term_freq, doc_len, doc_num):
+    stemmer = SnowballStemmer("english")
     if isinstance(tree, str):
-        if tree.find('"'):
-            phrase = tree.replace('"', '')
+        if tree.find('"') != -1 or tree.find("'") != -1 :
+            phrase = tree.replace('"', '').replace("'", '')
             terms = phrase.split()
+            terms = [stemmer.stem(x) for x in terms]
             return phrase_query(terms, term_freq, doc_len, doc_num)
-        elif tree.find('#'):
+        elif tree.find('#') != -1:
             terms = tree.split('#')
+            terms[0] = stemmer.stem(terms[0])
+            terms[1] = stemmer.stem(terms[1])
             return proximity_query(terms[0], terms[1], terms[2], term_freq, doc_len, doc_num)
         else:
-            return term_query(tree, term_freq, doc_len, doc_num)
+            term = stemmer.stem(tree)
+            return term_query(term, term_freq, doc_len, doc_num)
     else:
         return merge_dict(tree.value, tree_traverse(tree.left, term_freq, doc_len, doc_num),
                           tree_traverse(tree.right, term_freq, doc_len, doc_num))
@@ -161,25 +170,27 @@ def tree_query(query, term_freq, doc_len, doc_num):
     tokens = bt.split_query(query)
     tree = bt.build_tree(tokens)
     final_scores = tree_traverse(tree, term_freq, doc_len, doc_num)
-    return  final_scores
+    return final_scores
 #test
 #load frequency, doc lengths, doc number
 # term_frequency_address = BASE_DIR / 'doc_index' / 'term_frequency'
 # doc_len_address = BASE_DIR / 'doc_index' / 'doc_len'
 # num_docs = BASE_DIR / 'doc_index' / 'num_docs'
-#
+# # #
 # with open(term_frequency_address, "rb") as f:
 #     term_frequency = pickle.load(f)
 # with open(doc_len_address, "rb") as f:
 #     doc_len = pickle.load(f)
 # with open(num_docs, "rb") as f:
 #     doc_num = pickle.load(f)
-#
-# term1 = 'tomato'
+# #
+# term1 = 'burger'
 # term2 = 'onion'
 # terms = ['fish']
-# c_query = 'tomato AND potato'
-# #ir_list = term_query(query, term_frequency, doc_len,  doc_num)
-# ir_list = set(sorted(phrase_query(terms, term_frequency, doc_len,  doc_num)))
-
+# c_query = 'fucksao'
+# bm_list = dict(sorted(term_query(c_query, term_frequency, doc_len,  doc_num).items(), key=lambda kv: kv[1], reverse=True))
+# #bm_list = dict(sorted(term_query(term1, term_frequency, doc_len,  doc_num).items(), key=lambda kv: kv[1], reverse=True))
+# ir_list = set(bm_list)
+# #print(bm_list)
+# print(bm_list)
 # print(ir_list)

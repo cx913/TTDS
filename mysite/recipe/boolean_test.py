@@ -4,7 +4,7 @@ import time
 start_time = time.time()
 query = '(("cat" AND "dog" OR "hamster") NOT "rabbit") AND (apples OR "pears and bananas" OR "grapefruit"*) AND ("green" OR "yellow" AND ("blue" OR "purple"))'
 query_ = '"apple pie" OR *berry OR ((apple OR banana) AND (pie NOT ("orange juice" OR grape))) OR "pear*"'
-query__2 = '"tomato chip" AND potato#tomato#3'
+query__2 = 'Yogurt AND Parfaits'
 tokens = bt.split_query(query__2)
 #print(query)
 #print(tokens)

@@ -7,10 +7,14 @@
 {#          <span class="navbar-toggler-icon"></span>#}
 {#      </button>#}
       {#    Search bar not implemented#}
-      <input class="form-control form-control-dark w-100 rounded-0 border-0" name="q" id="search-input" placeholder="Search" aria-label="Search">
+     <input class="form-control form-control-dark w-100 rounded-0 border-0" name="q" id="search-input" placeholder="Search" aria-label="Search">
+     <input class="form-control form-control-dark w-50 rounded-0 border-0" name="energy" id="search-input" placeholder="Energy" aria-label="energy">
+     <input class="form-control form-control-dark w-50 rounded-0 border-0" name="fat" id="search-input" placeholder="Fat" aria-label="fat">
+     <input class="form-control form-control-dark w-50 rounded-0 border-0" name="protein" id="search-input" placeholder="Protein" aria-label="protein">
+     <input class="form-control form-control-dark w-50 rounded-0 border-0" name="saturates" id="search-input" placeholder="Saturates" aria-label="saturates">
+     <input class="form-control form-control-dark w-50 rounded-0 border-0" name="sugars" id="search-input" placeholder="Sugars" aria-label="sugars">
       {#    Search button not implemented#}
      <div class="navbar-nav">
-
           <div class="nav-item text-nowrap">
               <a class="nav-link px-3" href="{% url 'search-results' %}" onclick="submitResponse(this.href);return false;" id="search-icon"> Search</a>
               <script>
@@ -20,7 +24,6 @@
                   form.submit();
                 };
               </script>
-
           </div>
       </div>
   </form>

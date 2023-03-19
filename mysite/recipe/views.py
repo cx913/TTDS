@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.contrib.staticfiles.views import serve
 from django.http import JsonResponse
-from .models import Recipes
+from .models import Recipes, NutritionalInfo
 import pickle
 import math
 from . import query_process as qp
@@ -30,14 +30,20 @@ def home(request):
 def serve_static(request, path):
     return serve(request, path, insecure=True)
 
+
 def search_results(request):
-    ctx = {}
     if request.method == "POST":
         query = request.POST['q']
+        # low case
+        query = query.lower()
         if ' ' not in query:
-            ir_list = set(sorted(qp.term_query(query, term_frequency, doc_len, doc_num), reverse=True))
+            bm25_list = dict(sorted(qp.term_query(query, term_frequency, doc_len,  doc_num).items(), key=lambda kv: kv[1], reverse=True))
+            ir_list = bm25_list.keys()
         else:
-            ir_list = set(sorted(qp.tree_query(query, term_frequency, doc_len, doc_num), reverse=True))
+            bm25_list = dict(
+                sorted(qp.tree_query(query, term_frequency, doc_len, doc_num).items(), key=lambda kv: kv[1],
+                       reverse=True))
+            ir_list = bm25_list.keys()
         limit_count = 0
         limit = 50
         all_data = None
@@ -53,8 +59,10 @@ def search_results(request):
                     id=doc_id
                 )
                 all_data = all_data | data
+            nutrition = NutritionalInfo.objects.filter(
+                title=doc_id
+            )
             limit_count += 1
-
         return render(request, 'recipe/search_results.html', {'q': query, 'res': all_data})
     else:
         query = request.POST.get('q')
@@ -62,44 +70,16 @@ def search_results(request):
 
 def show_recipe(request, recipe_id):
     recipe = Recipes.objects.get(id=recipe_id)
+    #nutritionalInfo = NutritionalInfo.objects.get(title=recipe.title)
+    recipe.instructions = recipe.instructions.replace('{"text":', '').replace('}', '').replace('[', '').replace(']', '').replace('"', '').split('",')
+    recipe.ingredients = recipe.ingredients.replace('text', '').replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(':', '').split(',')
+    #return render(request, 'recipe/show_recipe.html', {'recipe': recipe, 'nutritionalInfo': nutritionalInfo})
     return render(request, 'recipe/show_recipe.html', {'recipe': recipe})
-
 
 
 
 # class HomePageView(TemplateView):
 #     template_name = 'recipe/home.html'
-
-
-class SearchResultsView(ListView):
-    model = Recipes
-    template_name = 'recipe/search_results.html'
-
-    def get_queryset(self):  # new
-        query = self.request.GET.get("q")
-
-        if ' ' not in query:
-            ir_list = set(sorted(qp.term_query(query, term_frequency, doc_len, doc_num), reverse=True))
-        else:
-            ir_list = set(sorted(qp.tree_query(query, term_frequency, doc_len, doc_num), reverse=True))
-        limit_count = 0
-        limit = 50
-        all_data = None
-        for doc_id in ir_list:
-            if limit_count == limit:
-                break
-            if limit_count == 0:
-                all_data = Recipes.objects.filter(
-                    id=doc_id
-                )
-            else:
-                data = Recipes.objects.filter(
-                    id=doc_id
-                )
-                all_data = all_data | data
-            limit_count += 1
-        return all_data
-
 
 
 
