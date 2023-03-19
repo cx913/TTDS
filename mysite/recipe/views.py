@@ -34,6 +34,8 @@ def serve_static(request, path):
 def search_results(request):
     if request.method == "POST":
         query = request.POST['q']
+        # low case
+        query = query.lower()
         if ' ' not in query:
             bm25_list = dict(sorted(qp.term_query(query, term_frequency, doc_len,  doc_num).items(), key=lambda kv: kv[1], reverse=True))
             ir_list = bm25_list.keys()

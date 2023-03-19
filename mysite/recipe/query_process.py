@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent
 
 def merge_dict(b, x, y):
     z = {}
-    if b == 'AND':
+    if b == 'and':
         for key, value in x.items():
             if key in x.keys() and key in y.keys():
                 z[key] = y[key] + x[key]
         return z
-    elif b == 'OR':
+    elif b == 'or':
         for key, value in x.items():
             if key in x.keys() and key in y.keys():
                 z[key] = y[key] + x[key]
@@ -25,7 +25,7 @@ def merge_dict(b, x, y):
             if key not in z:
                 z[key] = y[key]
         return z
-    elif b == 'NOT':
+    elif b == 'not':
         for key, value in x.items():
             if key not in y.keys():
                 z[key] = x[key]
@@ -148,12 +148,12 @@ def proximity_query(term1, term2, distance, term_freq, doc_len, doc_num):
 def tree_traverse(tree, term_freq, doc_len, doc_num):
     stemmer = SnowballStemmer("english")
     if isinstance(tree, str):
-        if tree.find('"'):
-            phrase = tree.replace('"', '')
+        if tree.find('"') != -1 or tree.find("'") != -1 :
+            phrase = tree.replace('"', '').replace("'", '')
             terms = phrase.split()
             terms = [stemmer.stem(x) for x in terms]
             return phrase_query(terms, term_freq, doc_len, doc_num)
-        elif tree.find('#'):
+        elif tree.find('#') != -1:
             terms = tree.split('#')
             terms[0] = stemmer.stem(terms[0])
             terms[1] = stemmer.stem(terms[1])
@@ -187,8 +187,8 @@ def tree_query(query, term_freq, doc_len, doc_num):
 # term1 = 'burger'
 # term2 = 'onion'
 # terms = ['fish']
-# c_query = 'tomato AND potato'
-# bm_list = dict(sorted(tree_query(c_query, term_frequency, doc_len,  doc_num).items(), key=lambda kv: kv[1], reverse=True))
+# c_query = 'fucksao'
+# bm_list = dict(sorted(term_query(c_query, term_frequency, doc_len,  doc_num).items(), key=lambda kv: kv[1], reverse=True))
 # #bm_list = dict(sorted(term_query(term1, term_frequency, doc_len,  doc_num).items(), key=lambda kv: kv[1], reverse=True))
 # ir_list = set(bm_list)
 # #print(bm_list)
