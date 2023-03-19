@@ -14,11 +14,13 @@
 {#                              This week#}
 {#                            </button>#}
                           </div>
-            <h2>{{ recipe.title }}</h2> </br>
+            <a href={{ recipe.url }}><h2>{{ recipe.title }}</h2></a> </br>
             <h2>Ingredients</h2>
-            <p>{{ recipe.ingredients }}</p> </br>
+            <p style="white-space: pre-line">{{ recipe.ingredients }}</p> </br>
             <h2>Instructions</h2>
-            <p>{{ recipe.instructions }}</p>
+            <p style="white-space: pre-line">{{ recipe.instructions }}</p>
+            <h2>Nutrition</h2>
+           {#  <p style="white-space: pre-line">{{ nutritionalInfo.nutr_values_per100g }}</p>#}
 
 
 
