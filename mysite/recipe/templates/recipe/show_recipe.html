@@ -2,17 +2,56 @@
 
 {% block content %}
 
-     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                          <h1 class="h2">Recipe Details</h1>
-{#                          <div class="btn-toolbar mb-2 mb-md-0">#}
-{#                            <div class="btn-group me-2">#}
-{#                              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>#}
-{#                              <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>#}
-{#                            </div>#}
-{#                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">#}
-{#                              <span data-feather="calendar" class="align-text-bottom"></span>#}
-{#                              This week#}
-{#                            </button>#}
+{#     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">#}
+    <div class="app-content">
+     <div class="recipe">
+         <div class="breadcrumbs-wrapper wrapper"></div>
+
+        <div class="recipe-summary wrapper">
+            <div class="recipe-details">
+                <div class="primary-info-text">
+                    <div class="primary-info-left-wrapper">
+                        <h1 class="recipe-title font-bold h2-text primary-dark">
+                            {{ recipe.title }}
+                        </h1>
+                        <span class="attribution">
+                        </span>
+                    </div>
+                    <div class="summary-item-wrapper">
+                        <div class="recipe-summary-item  h2-text">
+                            <span class="value font-light h2-text">
+                                {{ recipe.ingredients | length }}
+                            </span>
+                            <span class="unit font-normal p3-text">
+                                Ingredients
+                            </span>
+                        </div>
+                        <div class="recipe-summary-item unit h2-text">
+                            <span class="value font-light h2-text">
+                                35
+                            </span>
+                            <span class="unit font-normal p3-text">
+                                Minutes
+                            </span>
+                        </div>
+                        <div class="recipe-summary-item unit h2-text">
+                            <span class="value font-light h2-text">
+                                690
+                            </span>
+                            <span class="unit font-normal p3-text">
+                                Calories
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+     </div>
+
+
+
+
                           </div>
             <h2>{{ recipe.title }}</h2> </br>
             <h2>Ingredients</h2>
@@ -20,7 +59,114 @@
             <h2>Instructions</h2>
             <p>{{ recipe.instructions }}</p>
 
+<style>
 
+.p3-text, .card-info.article-embed .card-description, .tray-nutrition .nutritional-info .text, .onboarding-widget .recipe-card .card-title, .payment .payment-title .add-new, .payment-method .card-num-cards-group .last-four, .payment-method .card-num-cards-group .expire-date, .pro-universal-cta .sticky-header-subtitle, .thermometer-footer .legal-footer .legal-links, .view-nutrition .nutritional-info .text {
+    font-size: 14px;
+    line-height: 1.714285714285714;
+}
+
+.font-normal {
+    font-family: europa-regularregular, sans-serif;
+    font-weight: 400;
+}
+
+.app-content {
+    overflow: auto;
+    position: relative;
+    flex: 1;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.recipe .breadcrumbs-wrapper {
+    max-width: 978px;
+    padding-top: 102px;
+}
+
+.recipe {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: calc(100vh - 60px);
+    margin: auto;
+}
+
+.recipe > .recipe-summary {
+    color: #4a4a4a;
+    margin-top: 32px;
+    max-width: 978px;
+    width: 100%;
+    display: flex;
+}
+
+.recipe > .wrapper, .recipe .recipe-info > .wrapper {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.recipe > .recipe-summary .recipe-details {
+    margin: auto 0.5em;
+}
+
+.recipe-details {
+    justify-content: center;
+}
+
+.recipe-details .primary-info-text .primary-info-left-wrapper {
+    line-height: 1.33;
+    width: 95%;
+}
+
+.h2-text, .text-input-wrapper.large-input .text-input::placeholder {
+    font-size: 40px;
+    line-height: 1.2;
+}
+
+@media only screen and (max-width: 1279px)
+.recipe > .recipe-summary .summary-item-wrapper {
+    width: 26em;
+    margin: 20px -28px;
+}
+
+.recipe > .recipe-summary .summary-item-wrapper {
+    width: 32em;
+    margin: 20px -10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.recipe-summary-item {
+    color: #4a4a4a;
+    flex: 1;
+    text-align: center;
+}
+
+.recipe-summary-item.unit {
+    border-left: 1px solid #bababa;
+}
+
+.recipe-summary-item {
+    color: #4a4a4a;
+    flex: 1;
+    text-align: center;
+}
+.h2-text, .text-input-wrapper.large-input .text-input::placeholder {
+    font-size: 40px;
+    line-height: 1.2;
+}
+
+.recipe-summary-item.unit:not(:last-child) {
+    border-right: 1px solid #bababa;
+}
+
+
+</style>
 
 {% endblock %}
+
 
