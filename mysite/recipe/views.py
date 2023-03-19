@@ -59,6 +59,9 @@ def search_results(request):
                     id=doc_id
                 )
                 all_data = all_data | data
+            nutrition = NutritionalInfo.objects.filter(
+                title=doc_id
+            )
             limit_count += 1
         return render(request, 'recipe/search_results.html', {'q': query, 'res': all_data})
     else:
@@ -68,8 +71,8 @@ def search_results(request):
 def show_recipe(request, recipe_id):
     recipe = Recipes.objects.get(id=recipe_id)
     #nutritionalInfo = NutritionalInfo.objects.get(title=recipe.title)
-    recipe.instructions = recipe.instructions.replace('{"text":', '').replace('}', '').replace('[', '').replace(']', '')
-    recipe.ingredients = recipe.ingredients.replace('text', '').replace('"', '').replace(',', '\n').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(':', '')
+    recipe.instructions = recipe.instructions.replace('{"text":', '').replace('}', '').replace('[', '').replace(']', '').replace('"', '').split('",')
+    recipe.ingredients = recipe.ingredients.replace('text', '').replace('"', '').replace('[', '').replace(']', '').replace('{', '').replace('}', '').replace(':', '').split(',')
     #return render(request, 'recipe/show_recipe.html', {'recipe': recipe, 'nutritionalInfo': nutritionalInfo})
     return render(request, 'recipe/show_recipe.html', {'recipe': recipe})
 
