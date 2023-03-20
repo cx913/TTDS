@@ -1,3 +1,5 @@
 /data_preprocess/doc_index/
 /data_preprocess/doc_index.zip
 /data_preprocess/recipes.json
+/mysite/recipes.db
+/mysite/recipe/doc_index.zip

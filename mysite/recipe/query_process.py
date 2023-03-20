@@ -8,6 +8,49 @@ from nltk.stem.snowball import SnowballStemmer
 BASE_DIR = Path(__file__).resolve().parent
 
 
+def nutrition_test(query, exact_value):
+    # empty always true
+    if query == '':
+        return True
+    if len(query) < 2:
+        return False
+    if query[:2] == '>=':
+        value = float(''.join((c for c in query[1:] if c.isdigit())))
+        # check nan
+        if value != value:
+            return False
+        return exact_value >= value
+    elif query[:2] == '<=':
+        value = ''.join((c for c in query[1:] if c.isdigit()))
+        # check nan
+        if value == '':
+            return False
+        value = float(value)
+        return exact_value <= value
+    elif query[0] == '=':
+        value = float(''.join((c for c in query[1:] if c.isdigit())))
+        # check nan
+        if value == '':
+            return False
+        value = float(value)
+        return exact_value == value
+    elif query[0] == '<':
+        value = float(''.join((c for c in query[1:] if c.isdigit())))
+        # check nan
+        if value == '':
+            return False
+        value = float(value)
+        return exact_value < value
+    elif query[0] == '>':
+        value = float(''.join((c for c in query[1:] if c.isdigit())))
+        # check nan
+        if value == '':
+            return False
+        value = float(value)
+        return exact_value > value
+    else:
+        # wrong grammar
+        return False
 def merge_dict(b, x, y):
     z = {}
     if b == 'and':
@@ -91,7 +134,7 @@ def phrase_query(terms, term_freq, doc_len, doc_num):
             cur_pos = pos
             for inverse_index in inverse_index_list[1:]:
                 if inverse_index.get(doc):
-                    if inverse_index.get(doc)-cur_pos == 1:
+                    if inverse_index.get(doc) - cur_pos == 1:
                         cur_pos = inverse_index.get(doc)
                     else:
                         return {}
@@ -140,7 +183,7 @@ def proximity_query(term1, term2, distance, term_freq, doc_len, doc_num):
         if key in bm25_scores1.keys() and key in bm25_scores2.keys():
             for pos_1 in inverse_index1[key]:
                 for pos_2 in inverse_index2[key]:
-                    if abs(pos_1-pos_2) <= distance:
+                    if abs(pos_1 - pos_2) <= distance:
                         bm25_scores_p[key] = bm25_scores1[key] + bm25_scores2[key]
     return bm25_scores_p
 
@@ -148,7 +191,7 @@ def proximity_query(term1, term2, distance, term_freq, doc_len, doc_num):
 def tree_traverse(tree, term_freq, doc_len, doc_num):
     stemmer = SnowballStemmer("english")
     if isinstance(tree, str):
-        if tree.find('"') != -1 or tree.find("'") != -1 :
+        if tree.find('"') != -1 or tree.find("'") != -1:
             phrase = tree.replace('"', '').replace("'", '')
             terms = phrase.split()
             terms = [stemmer.stem(x) for x in terms]
@@ -171,8 +214,8 @@ def tree_query(query, term_freq, doc_len, doc_num):
     tree = bt.build_tree(tokens)
     final_scores = tree_traverse(tree, term_freq, doc_len, doc_num)
     return final_scores
-#test
-#load frequency, doc lengths, doc number
+# test
+# load frequency, doc lengths, doc number
 # term_frequency_address = BASE_DIR / 'doc_index' / 'term_frequency'
 # doc_len_address = BASE_DIR / 'doc_index' / 'doc_len'
 # num_docs = BASE_DIR / 'doc_index' / 'num_docs'
