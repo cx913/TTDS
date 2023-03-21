@@ -129,9 +129,26 @@ def search_results(request):
 def show_recipe(request, recipe_id):
     recipe = Recipes.objects.get(id=recipe_id)
     # nutritionalInfo = NutritionalInfo.objects.get(title=recipe.title)
-    recipe.instructions = recipe.instructions.replace('text', '').replace('"', '').replace('[', '').replace(']',
+    instructions_list = recipe.instructions.replace('text', '').replace('"', '').replace('[', '').replace(']',
                                                                                                           '').replace(
         '{', '').replace('}', '').replace(':', '').split(',')
+    recipe_ingredients = []
+    temp_instruction = ''
+    for instruction in instructions_list:
+        # temp_instruction = temp_instruction + ' ' + instruction
+
+        if temp_instruction.endswith('.') or temp_instruction.endswith('!'):
+            if instruction.startswith('('):
+                temp_instruction = temp_instruction + ' ' + instruction
+                recipe_ingredients.append(temp_instruction)
+                temp_instruction = ''
+                continue
+            recipe_ingredients.append(temp_instruction)
+            temp_instruction = ''
+        temp_instruction = temp_instruction + ' ' + instruction
+    if temp_instruction.endswith('.') or temp_instruction.endswith('!'):
+        recipe_ingredients.append(temp_instruction)
+    recipe.instructions = recipe_ingredients
     recipe.ingredients = recipe.ingredients.replace('text', '').replace('"', '').replace('[', '').replace(']',
                                                                                                           '').replace(
         '{', '').replace('}', '').replace(':', '').split(',')
