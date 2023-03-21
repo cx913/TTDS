@@ -191,6 +191,14 @@ def tree_traverse(tree, term_freq, doc_len, doc_num):
             terms[0] = stemmer.stem(terms[0])
             terms[1] = stemmer.stem(terms[1])
             return proximity_query(terms[0], terms[1], terms[2], term_freq, doc_len, doc_num)
+        elif tree.value.find(' ') != -1:
+            terms = tree.value.split()
+            terms = [x for x in terms if x not in stop_words]
+            terms = [stemmer.stem(x) for x in terms]
+            s = term_query(terms[0], term_freq, doc_len, doc_num)
+            for term in terms[1:]:
+                s = merge_dict('and', s, term_query(term, term_freq, doc_len, doc_num))
+            return s
         else:
             term = stemmer.stem(tree.value)
             return term_query(term, term_freq, doc_len, doc_num)
