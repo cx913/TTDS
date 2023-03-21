@@ -43,6 +43,7 @@ def search_results(request):
         salts = request.POST['salts']
         saturates = request.POST['saturates']
         sugars = request.POST['sugars']
+        filter_check = request.POST.get('filter', False)
 
         if ' ' not in query:
             bm25_list = dict(
@@ -57,65 +58,71 @@ def search_results(request):
         limit_count = 0
         limit = 50
         all_data = None
-        for doc_id in ir_list:
-            if limit_count == limit:
-                break
-            if limit_count == 0:
-                data = Recipes.objects.filter(
-                    id=doc_id
-                )
-                nutrition = NutritionalInfo.objects.filter(
-                    id=data[0].title
-                )
-                if len(nutrition) == 0:
+        #check box
+        if filter_check == 'filter':
+            return render(request, 'recipe/search_results.html', {})
+        else:
+            for doc_id in ir_list:
+                # check if reach the limit
+                if limit_count == limit:
+                    break
+                # first retrive
+                if limit_count == 0:
+                    data = Recipes.objects.filter(
+                        id=doc_id
+                    )
+                # nutrition = NutritionalInfo.objects.filter(
+                #     id=data[0].title
+                # )
+                # if len(nutrition) == 0:
+                #     all_data = data
+                #     limit_count += 1
+                #     continue
+                # # get values
+                # values = nutrition.all()[0].nutr_values_per100g
+                # values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
+                # values = values.split(',')
+                # for value in values:
+                #     if value == '':
+                #         value = '0'
+                # values = [float(value) for value in values]
+                # # test
+                # f1 = qp.nutrition_test(energy, values[0])
+                # f2 = qp.nutrition_test(fat, values[1])
+                # f3 = qp.nutrition_test(protein, values[2])
+                # f4 = qp.nutrition_test(salts, values[3])
+                # f5 = qp.nutrition_test(saturates, values[4])
+                # f6 = qp.nutrition_test(sugars, values[5])
+                # if f1 and f2 and f3 and f4 and f5 and f6:
                     all_data = data
                     limit_count += 1
-                    continue
-                # get values
-                values = nutrition.all()[0].nutr_values_per100g
-                values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
-                values = values.split(',')
-                for value in values:
-                    if value == '':
-                        value = '0'
-                values = [float(value) for value in values]
-                # test
-                f1 = qp.nutrition_test(energy, values[0])
-                f2 = qp.nutrition_test(fat, values[1])
-                f3 = qp.nutrition_test(protein, values[2])
-                f4 = qp.nutrition_test(salts, values[3])
-                f5 = qp.nutrition_test(saturates, values[4])
-                f6 = qp.nutrition_test(sugars, values[5])
-                if f1 and f2 and f3 and f4 and f5 and f6:
-                    all_data = data
-                    limit_count += 1
-            else:
-                data = Recipes.objects.filter(
-                    id=doc_id
-                )
-                nutrition = NutritionalInfo.objects.filter(
-                    id=data[0].title
-                )
-                if len(nutrition) == 0:
-                    all_data = all_data | data
-                    limit_count += 1
-                    continue
-                # get values
-                values = nutrition.all().nutr_values_per100g
-                values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
-                values = values.split(',')
-                for value in values:
-                    if value == '':
-                        value = '50'
-                values = [float(value) for value in values]
-                # test
-                f1 = qp.nutrition_test(energy, values[0])
-                f2 = qp.nutrition_test(fat, values[1])
-                f3 = qp.nutrition_test(protein, values[2])
-                f4 = qp.nutrition_test(salts, values[3])
-                f5 = qp.nutrition_test(saturates, values[4])
-                f6 = qp.nutrition_test(sugars, values[5])
-                if f1 and f2 and f3 and f4 and f5 and f6:
+                else:
+                    data = Recipes.objects.filter(
+                        id=doc_id
+                    )
+                # nutrition = NutritionalInfo.objects.filter(
+                #     id=data[0].title
+                # )
+                # if len(nutrition) == 0:
+                #     all_data = all_data | data
+                #     limit_count += 1
+                #     continue
+                # # get values
+                # values = nutrition.all().nutr_values_per100g
+                # values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
+                # values = values.split(',')
+                # for value in values:
+                #     if value == '':
+                #         value = '50'
+                # values = [float(value) for value in values]
+                # # test
+                # f1 = qp.nutrition_test(energy, values[0])
+                # f2 = qp.nutrition_test(fat, values[1])
+                # f3 = qp.nutrition_test(protein, values[2])
+                # f4 = qp.nutrition_test(salts, values[3])
+                # f5 = qp.nutrition_test(saturates, values[4])
+                # f6 = qp.nutrition_test(sugars, values[5])
+                # if f1 and f2 and f3 and f4 and f5 and f6:
                     all_data = all_data | data
                     limit_count += 1
         return render(request, 'recipe/search_results.html', {'q': query, 'res': all_data})
