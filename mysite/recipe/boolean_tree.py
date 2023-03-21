@@ -1,5 +1,6 @@
+from threading import stack_size
+from typing import Counter
 import re
-
 
 class Node:
     def __init__(self, value):
@@ -7,167 +8,243 @@ class Node:
         self.left = None
         self.right = None
 
+def token_split(query):
+    # Temporarily replace spaces inside quotes with a placeholder
+    placeholder = '___SPACE___'
+    inside_quotes = False
+    modified_query = ""
 
-def split_query(query):
-    global tokens
-    pattern = r'\(|\)|NOT|AND|OR|\w+|"[^"]*"|\b\w+\*|\*\w+\b'
-    if isinstance(query, str):
-        tokens = re.findall(pattern, query)
-    return tokens
+    for char in query:
+        if char == '"':
+            inside_quotes = not inside_quotes
 
-
-def op_count(tokens, op_count=0):
-    operators = ['NOT', 'AND', 'OR']
-    for op in operators:
-        op_count += tokens.count(op)
-    return op_count
-
-
-def p_stack(tokens):
-    lp_stack = []
-    rp_stack = []
-    if tokens.count('(') == tokens.count(')') != 0:
-        # generate index for '(' and ')'
-        for i in range(len(tokens)):
-            if tokens[i] == '(':
-                lp_stack.append(i)
-            if tokens[i] == ')':
-                rp_stack.append(i)
-    return lp_stack, rp_stack
-
-
-def build_tree(tokens):
-    operators = ['NOT', 'AND', 'OR']
-    prec = {'NOT': 1, 'AND': 2, 'OR': 3}
-    lp_stack, rp_stack = p_stack(tokens)
-    op_idx = []
-    node_op = None
-    tree = None
-    left = []
-    right = []
-
-    if op_count(tokens) > 0:
-        # print(f'lp: {lp_stack}')
-        # print(f'rp: {rp_stack}')
-        # if query contains parentheses
-        if len(lp_stack) == len(rp_stack) != 0:
-            # op with lowest prec among parentheses pairs
-            # ex. '(...) AND (...) AND (...) OR (...)'
-            for i in range(len(lp_stack)):
-                if lp_stack[i] > rp_stack[i - 1]:  # end of parentheses pairs found
-                    for idx, token in enumerate(tokens[rp_stack[i - 1] + 1: lp_stack[i]]):
-                        if token in operators:  # op with lowest prec found among parentheses pairs
-                            op_idx.append((token, rp_stack[i - 1] + 1 + idx))  #
-
-            # print(len(op_idx))
-            if len(op_idx) < 1:
-                # op with lowest prec on left side of parentheses pairs
-                # ex. '... AND (... OR (...))'
-                if min(lp_stack) > 0 and max(rp_stack) == len(tokens) - 1:
-                    for idx, token in enumerate(tokens[:min(lp_stack)]):
-                        if token in operators:
-                            op_idx.append((token, idx))
-
-                # op with lowest prec on right side of parentheses pairs
-                # ex. '(... OR (...)) AND ...'
-                if min(lp_stack) == 0 and max(rp_stack) < len(tokens) - 1:
-                    for idx, token in enumerate(tokens[max(rp_stack) + 1:]):
-                        if token in operators:
-                            op_idx.append((token, max(rp_stack) + 1 + idx))
-
-                # op with lowest prec on both left and right sides of parentheses pairs
-                # ex. '... OR (...) OR ...'
-                if min(lp_stack) > 0 and max(rp_stack) < len(tokens) - 1:
-                    for idx, token in enumerate(tokens[:min(lp_stack)]):
-                        if token in operators:
-                            op_idx.append((token, idx))
-                    for idx, token in enumerate(tokens[max(rp_stack) + 1:]):
-                        if token in operators:
-                            op_idx.append((token, max(rp_stack) + 1 + idx))
-
-        elif tokens.count('(') == tokens.count(')') == 0:
-            for idx, token in enumerate(tokens):
-                if token in operators:
-                    op_idx.append((token, idx))
-
+        if char == ' ' and inside_quotes:
+            modified_query += placeholder
         else:
-            print("Number of parentheses mismatching")
-            # print(len(op_idx))
-            # print(op_idx)
+            modified_query += char
 
-    # find op with lowest prec if more than one in op_idx
-    if len(op_idx) > 0:
-        top_prec = 0  # top_prec means the lowest prec
-        for op in op_idx:
-            if op[0] in prec and prec[op[0]] > top_prec:
-                node_op = op
-                top_prec = prec[op[0]]
+    # Split the modified query based on the specified delimiters
+    tokens = re.split(r'(\sand\s|\sor\s|\snot\s|\()|(\))', modified_query)
 
-    if node_op is not None:
-        left = tokens[:node_op[1]]
-        right = tokens[node_op[1] + 1:]
+    # Filter out empty strings and None values from the tokens list and restore spaces
+    tokens = [token.replace(placeholder, ' ') for token in tokens if token and token.strip()]
 
-    #
-    lp_left, rp_left = p_stack(left)
-    lp_right, rp_right = p_stack(right)
+    # Further split tokens with a single quote and remove extra spaces around operators
+    final_tokens = []
+    for token in tokens:
+        if token.count('"') == 1:
+            final_tokens.extend(re.split(r'\s+', token))
+        else:
+            final_tokens.append(token.strip())
 
-    # print(f'op: {node_op}')
-    # print(f'left: {left}')
-    # print(f'lp: {lp_left}')
-    # print(f'rp: {rp_left}')
-    # print(f'right: {right}')
-    # print(f'lp: {lp_right}')
-    # print(f'rp: {rp_right}')
+    return final_tokens
 
-    pr_left = True
-    pr_right = True
-    if len(lp_left) == len(rp_left) != 0:
-        if left[0] == '(' and left[len(left) - 1] == ')':
-            for i in range(len(lp_left)):
-                if lp_left[i] > rp_left[i - 1]:
-                    pr_left = False
-                    break
-            if pr_left:
-                left = left[1:-1]
-                # print(f'new left: {left}')
-    if len(lp_right) == len(rp_right) != 0:
-        if right[0] == '(' and right[len(right) - 1] == ')':
-            for i in range(len(lp_right)):
-                if lp_right[i] > rp_right[i - 1]:
-                    pr_right = False
-                    break
-            if pr_right:
-                right = right[1:-1]
-                # print(f'new right: {right}')
 
-    # print('------')
 
-    # build root node of the tree
-    tree = Node(tokens[node_op[1]])
+def is_valid_query(tokens):
+    operators = {"not", "and", "or"}
+    previous_token = None
 
-    # recursively add nodes to the tree
-    if op_count(left) > 0:
-        tree.left = build_tree(left)
+    for idx, token in enumerate(tokens):
+        if isinstance(token, Node) or token not in operators:
+            if previous_token and previous_token not in operators:
+                return False
+        elif token in operators:
+            if previous_token is None or previous_token in operators:
+                return False
+            if token == "not" and (idx == len(tokens) - 1 or tokens[idx + 1] == "NOT"):
+                return False
+            if token in {"and", "or"} and (idx == len(tokens) - 1):
+                return False
+        previous_token = token
+
+    return True
+def build_tree_from_list(tokens):
+    if not tokens:
+        return None
+
+    if len(tokens) == 1:
+        return tokens[0] if isinstance(tokens[0], Node) else Node(tokens[0])
+
+    for op in ["or"]:
+        indices = [i for i, token in enumerate(tokens) if token == op]
+        if indices:
+            index = indices[0]
+            root = Node(op)
+            root.left = build_tree_from_list(tokens[:index])
+            root.right = build_tree_from_list(tokens[index + 1:])
+            return root
+
+    for op in ["and"]:
+        indices = [i for i, token in enumerate(tokens) if token == op]
+        if indices:
+            index = indices[0]
+            root = Node(op)
+            root.left = build_tree_from_list(tokens[:index])
+            root.right = build_tree_from_list(tokens[index + 1:])
+            return root
+
+    for op in ["not"]:
+        indices = [i for i, token in enumerate(tokens) if token == op]
+        if indices:
+            index = indices[0]
+            root = Node(op)
+            root.left = build_tree_from_list(tokens[:index])
+            root.right = build_tree_from_list(tokens[index + 1:])
+            return root
+
+def create_binary_tree(tokens):
+    stack = []
+    operators = {'not': 3, 'and': 2, 'or': 1}
+    
+    for token in tokens:
+        i = -1
+        
+
+        if token == '(':
+            stack.append(token)
+            print("append ( to list")
+          
+
+        elif token == ')':
+            i=-1
+            count = 0
+            while(stack[i] != "("):
+                count += 1
+                i -= 1
+            print("current number before (" + str(count))
+            # the case when only one element between brackets
+            if count == 1:
+                if stack[-1] in operators:
+                    print("1")
+                    return -1
+                else:
+                    cur = stack.pop()
+                    stack.pop()
+                    stack.append(cur)
+                    print("2")
+                    continue
+            # when two elements between brackets
+            elif count == 2:
+                if (isinstance(stack[-1],str) and stack[-1] not in operators) and (isinstance(stack[-2],str) and stack[-1] not in operators):
+                    cur_str = stack[-2] + " " + stack[-1]
+                    cur_node = Node(cur_str)
+                    stack.pop()
+                    stack.pop()
+                    stack.pop()
+                    stack.append(cur_node)
+                    print("3")
+                    continue  
+                else:
+                    print("6")
+                    return -1
+            # when three elements between brackets
+            elif count == 3:
+                if (isinstance(stack[-1],str) or isinstance(stack[-1],Node))\
+                and (stack[-2] in operators)\
+                and (isinstance(stack[-3],str) or isinstance(stack[-3],Node)):
+              
+                    cur_node = Node(stack[-2])
+                    if isinstance(stack[-1],str):
+                        cur_right_node = Node(stack[-1])
+                    if isinstance(stack[-1], Node):
+                        cur_right_node = stack[-1]
+                    if isinstance(stack[-3],str):
+                        cur_left_node = Node(stack[-3])
+                    if isinstance(stack[-3], Node):
+                        cur_left_node = stack[-3]
+                    cur_node.left = cur_left_node
+                    cur_node.right = cur_right_node
+                    for i in range(4):
+                        stack.pop()
+                    stack.append(cur_node)
+                    print("4")
+                    continue
+                elif (isinstance(stack[-1],str) and stack[-1] not in operators)\
+                    and (isinstance(stack[-2],str) and stack[-1] not in operators)\
+                    and (isinstance(stack[-2],str) and stack[-1] not in operators):
+                    cur_str = stack[-1] + " " + stack[-2] + " " + stack[-3]
+                    cur_node = Node(cur_str)
+                    for i in range(4):
+                        stack.pop()
+                    stack.append(cur_node)
+                    print("5")
+                    continue  
+                else:
+                    print("7")
+                    return -1
+            elif count > 3:
+                flag = False  
+                for j in range(-1, -count-1, -1):
+                    if (stack[j] in operators) == True:
+                        flag = True
+             
+                if flag == False:
+                    cur_str = ""
+                    for j in range(-count, 0, 1):
+                        cur_str += stack[j]
+                        cur_str += " "
+                    cur_str.strip()
+                    cur_node = Node(cur_str)
+                    for j in range(-count, 1, 1):
+                        stack.pop()
+                    stack.append(cur_node)
+                    print(11)
+                    continue
+            
+                else:
+                    length = len(stack)
+                    if is_valid_query(stack[length-count:length]):
+                        cur_node = build_tree_from_list(stack[length-count:length])
+                        for j in range(-count, 1, 1):
+                            stack.pop()
+                            stack.append(cur_node)
+                            print("9")
+                            continue
+                    else:
+                        print("10")
+                        return -1                            
+            else:
+                print("8")
+                return -1
+
+
+       
+        else:
+            stack.append(token)
+            
+    if len(stack) == 1:
+        return stack.pop()
+    elif len(stack) > 1:
+        if is_valid_query(stack):
+            print("14")
+            return build_tree_from_list(stack)
+        else:
+            print("13")
+            return -1
     else:
-        tree.left = left[0]
-    if op_count(right) > 0:
-        tree.right = build_tree(right)
+        print("12")
+        return -1
+
+def build_tree_from_query(query):
+    query_list = token_split(query)
+    print(query_list)
+    if ('(' in query_list) or (')' in query_list):
+        count_left = 0
+        count_right = 0
+        for token in query_list:
+            if token == '(':
+                count_left += 1
+            if token == ')':
+                count_right +=1
+            if count_left == count_right:
+                return create_binary_tree(query_list)
+        else:
+            print('left and right brackets not the same number')
+            return -1
     else:
-        tree.right = right[0]
-
-    return tree
-
-
-def display_tree(tree, indent=0):
-    print('  ' * indent + tree.value)
-    if tree.left:
-        if isinstance(tree.left, str):
-            print('  ' * (indent + 1) + tree.left)
+        if is_valid_query(query_list):
+            return build_tree_from_list(query_list)
         else:
-            display_tree(tree.left, indent + 1)
-    if tree.right:
-        if isinstance(tree.right, str):
-            print('  ' * (indent + 1) + tree.right)
-        else:
-            display_tree(tree.right, indent + 1)
-
+            print("13")
+            return -1

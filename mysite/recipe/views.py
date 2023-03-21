@@ -45,16 +45,11 @@ def search_results(request):
         sugars = request.POST['sugars']
         filter_check = request.POST.get('filter', False)
 
-        if ' ' not in query:
-            bm25_list = dict(
-                sorted(qp.term_query(query, term_frequency, doc_len, doc_num).items(), key=lambda kv: kv[1],
-                       reverse=True))
-            ir_list = bm25_list.keys()
-        else:
-            bm25_list = dict(
-                sorted(qp.tree_query(query, term_frequency, doc_len, doc_num).items(), key=lambda kv: kv[1],
-                       reverse=True))
-            ir_list = bm25_list.keys()
+        bm25_list = dict(
+            sorted(qp.tree_query(query, term_frequency, doc_len, doc_num).items(), key=lambda kv: kv[1],
+                    reverse=True))
+        ir_list = bm25_list.keys()
+
         limit_count = 0
         limit = 50
         # for filter
