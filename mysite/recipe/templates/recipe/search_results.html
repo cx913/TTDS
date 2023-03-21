@@ -38,19 +38,25 @@
                     <div class="collapse" id="nutritionfilter">
                                    <div class="card card-body d-flex justify-content-between flex-wrap flex-md-nowrap pt-3 pb-2 mb-3 border-bottom">
                                     <form class="mb-3 row" id="nutrition-form" method="post" action="/recipe/search_results">
+                                        <div class="mb-3 row">
                                             <span class="col-sm-2"> Sugar: </span>
 
-                                        <div class="wrapper col-sm-10">
-                                            <div class="values">
-                                                <span id="range1">71</span>
-                                                <span> ‐ </span>
-                                                <span id="range2">170</span>
+                                            <div class="wrapper col-sm-10">
+                                                <div class="values">
+                                                    <span id="range1">71</span>
+                                                    <span> ‐ </span>
+                                                    <span id="range2">170</span>
+                                                </div>
+                                                <div class="container">
+                                                    <div class="slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 35.5%, rgb(50, 100, 254) 35.5%, rgb(50, 100, 254) 85%, rgb(218, 218, 229) 85%);"></div>
+                                                    <input type="range" min="0" max="200" value="0" id="slider-1" oninput="slideOne()" autocompleted="">
+                                                    <input type="range" min="0" max="200" value="200" id="slider-2" oninput="slideTwo()" autocompleted="">
+                                                </div>
                                             </div>
-                                            <div class="container">
-                                                <div class="slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 35.5%, rgb(50, 100, 254) 35.5%, rgb(50, 100, 254) 85%, rgb(218, 218, 229) 85%);"></div>
-                                                <input type="range" min="0" max="200" value="0" id="slider-1" oninput="slideOne()" autocompleted="">
-                                                <input type="range" min="0" max="200" value="200" id="slider-2" oninput="slideTwo()" autocompleted="">
-                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                             <span class="col-sm-2"> Salt: </span>
+
                                         </div>
                                     </form>
 

@@ -127,9 +127,9 @@ def search_results(request):
 def show_recipe(request, recipe_id):
     recipe = Recipes.objects.get(id=recipe_id)
     # nutritionalInfo = NutritionalInfo.objects.get(title=recipe.title)
-    recipe.instructions = recipe.instructions.replace('{"text":', '').replace('}', '').replace('[', '').replace(']',
-                                                                                                                '').replace(
-        '"', '').split('",')
+    recipe.instructions = recipe.instructions.replace('text', '').replace('"', '').replace('[', '').replace(']',
+                                                                                                          '').replace(
+        '{', '').replace('}', '').replace(':', '').split(',')
     recipe.ingredients = recipe.ingredients.replace('text', '').replace('"', '').replace('[', '').replace(']',
                                                                                                           '').replace(
         '{', '').replace('}', '').replace(':', '').split(',')

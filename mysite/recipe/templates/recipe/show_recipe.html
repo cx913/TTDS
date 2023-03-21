@@ -17,48 +17,85 @@
                         <span class="attribution">
                         </span>
                     </div>
-                    <div class="summary-item-wrapper">
-                        <div class="recipe-summary-item  h2-text">
-                            <span class="value font-light h2-text">
-                                {{ recipe.ingredients | length }}
-                            </span>
-                            <span class="unit font-normal p3-text">
-                                Ingredients
-                            </span>
-                        </div>
-                        <div class="recipe-summary-item unit h2-text">
-                            <span class="value font-light h2-text">
-                                35
-                            </span>
-                            <span class="unit font-normal p3-text">
-                                Minutes
-                            </span>
-                        </div>
-                        <div class="recipe-summary-item unit h2-text">
-                            <span class="value font-light h2-text">
-                                690
-                            </span>
-                            <span class="unit font-normal p3-text">
-                                Calories
-                            </span>
-                        </div>
+                </div>
+                <div class="summary-item-wrapper">
+                    <div class="recipe-summary-item  h2-text">
+                        <span class="value font-light h2-text">
+                            {{ recipe.ingredients | length }}
+                        </span>
+                        <span class="unit font-normal p3-text">
+                            Ingredients
+                        </span>
                     </div>
-
+                    <div class="recipe-summary-item unit h2-text">
+                        <span class="value font-light h2-text">
+                            35
+                        </span>
+                        <span class="unit font-normal p3-text">
+                            Minutes
+                        </span>
+                    </div>
+                    <div class="recipe-summary-item unit h2-text">
+                        <span class="value font-light h2-text">
+                            690
+                        </span>
+                        <span class="unit font-normal p3-text">
+                            Calories
+                        </span>
+                    </div>
+                </div>
+                <div class="recipe-interactions-wrapper">
+                    <a class="read-dir-btn btn-primary wrapper recipe-summary-full-directions p1-text" href="{{ recipe.url }}" title="Read Directions" aria-label="Read Directions">
+                        <span class="p3-text">Read Directions</span>
+                    </a>
                 </div>
             </div>
+            <div class="recipe-details-image">
+                <img alt="Easy Roasted Tomato Soup" src="https://lh3.googleusercontent.com/UeQu1VPWsv_xY_gJo4hWtKUd7_5pZ8Etb4C-KZN69xNgJvBfcmZDj7BESMwnK6fxnjN534vjHB-vyM7uxHfZ=w640-h640-c-rw-v1-e365" class="recipe-image" data-pin-url="https://www.yummly.co.uk/recipe/Easy-Roasted-Tomato-Soup-2287716" data-pin-description="Easy Roasted Tomato Soup with Tomatoes, Garlic, Vegetable Stock, Olive Oil, Salt, Pepper, Basil." width="640" height="640" data-pin-nopin="" srcset="https://lh3.googleusercontent.com/UeQu1VPWsv_xY_gJo4hWtKUd7_5pZ8Etb4C-KZN69xNgJvBfcmZDj7BESMwnK6fxnjN534vjHB-vyM7uxHfZ=w1280-h1280-c-rw-v1-e365 2x">
+            </div>
         </div>
+
+        <div class="recipe-horizontal-rule greyscale-4"><hr></div>
+
+         <div class="recipe-wrapper wrapper">
+             <div class="recipe-info wrapper">
+                 <div class="recipe-ingredients wrapper">
+                    <div class="ingredients-header exp-default" id="ingredients">
+                        <h3 class="ingredients-header-title title h4-text primary-dark">Ingredients</h3>
+                    </div>
+                     <div class="shopping-list-ingredients">
+                         {% for ingredient in recipe.ingredients %}
+                         <li class="IngredientLine">{{ ingredient }}</li>
+                                 {% endfor %}
+                     </div>
+                 </div>
+                 <div class="wrapper nutrition-wrapper">
+
+                 </div>
+             <div class="recipe-ingredients wrapper">
+                    <div class="ingredients-header exp-default" id="instructions">
+                        <h3 class="ingredients-header-title title h4-text primary-dark">Instructions</h3>
+                    </div>
+                     <div class="shopping-list-ingredients">
+                         {% for instruction in recipe.instructions %}
+                         <li class="IngredientLine">{{ instruction }}</li>
+                                 {% endfor %}
+                     </div>
+                 </div>
+             </div>
+         </div>
+
      </div>
 
 
 
 
                           </div>
-            <a href={{ recipe.url }}><h2>{{ recipe.title }}</h2></a> </br>
-            <h2>Ingredients</h2>
-            <p style="white-space: pre-line">{{ recipe.ingredients }}</p> </br>
-            <h2>Instructions</h2>
-            <p style="white-space: pre-line">{{ recipe.instructions }}</p>
-            <h2>Nutrition</h2>
+{#            <h2>Ingredients</h2>#}
+{#            <p style="white-space: pre-line">{{ recipe.ingredients }}</p> </br>#}
+{#            <h2>Instructions</h2>#}
+{#            <p style="white-space: pre-line">{{ recipe.instructions }}</p>#}
+{#            <h2>Nutrition</h2>#}
            {#  <p style="white-space: pre-line">{{ nutritionalInfo.nutr_values_per100g }}</p>#}
 
 <style>
@@ -99,13 +136,13 @@
 .recipe > .recipe-summary {
     color: #4a4a4a;
     margin-top: 32px;
-    max-width: 978px;
+    {#max-width: 978px;#}
     width: 100%;
     display: flex;
 }
 
 .recipe > .wrapper, .recipe .recipe-info > .wrapper {
-    max-width: 900px;
+    {#max-width: 760px;#}
     width: 100%;
     margin: 0 auto;
 }
@@ -166,6 +203,161 @@
     border-right: 1px solid #bababa;
 }
 
+.recipe > .recipe-summary .recipe-interactions-wrapper {
+    display: flex;
+    flex-direction: row;
+    right: 0;
+}
+
+.recipe-summary-full-directions {
+    height: 42px;
+}
+
+.read-dir-btn {
+    display: block;
+    padding: 0;
+}
+
+.recipe-details .read-dir-btn {
+    margin-right: 1em;
+}
+
+.read-dir-btn.btn-primary {
+    max-width: 760px;
+    width: 150px;
+}
+a.btn-primary, a.btn-light, a.btn-secondary {
+    line-height: 40px;
+}
+
+.read-dir-btn{
+    -webkit-font-smoothing: antialiased;
+}
+
+.recipe-summary-full-directions > span {
+    position: relative;
+    margin: 0px -25px 14px;
+    width: 150px;
+}
+.read-dir-btn > span {
+    display: block;
+}
+
+span{
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 1em;
+    vertical-align: baseline;
+}
+
+.button, [class^="btn-"], [class*=" btn-"] {
+    letter-spacing: 0;
+    display: inline-block;
+    outline: none;
+    border: none;
+    border-radius: 3em;
+    box-sizing: border-box;
+    position: relative;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: capitalize;
+    white-space: nowrap;
+    text-align: center;
+    cursor: pointer;
+    transition: all 200ms ease;
+    padding: 11px 24px;
+    background-color: #fff;
+}
+
+.btn-primary, .recipe.exp-swap-button-styles .add-all-ingrs {
+    background-color: #0000FF;
+    color: #fff;
+}
+
+.p1-text, .pro-universal-cta .sticky-header-title {
+    font-size: 18px;
+    line-height: 1.666666666666667;
+}
+
+.recipe > .recipe-summary .recipe-details-image {
+    flex-basis: 480px;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: auto;
+    margin-left: 40px;
+}
+
+.recipe-details-image {
+    position: relative;
+    font-size: 0;
+}
+
+.recipe-horizontal-rule {
+    margin: 64px auto 56px;
+    opacity: 0.3;
+    max-width: 978px;
+    width: 100%;
+}
+.greyscale-4 {
+    color: #e3e3e3;
+}
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 1em;
+    {#vertical-align: baseline;#}
+}
+hr {
+    display: block;
+    unicode-bidi: isolate;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    overflow: hidden;
+    border-style: inset;
+    border-width: 1px;
+}
+
+.recipe .recipe-wrapper {
+    display: flex;
+}
+
+.recipe .recipe-wrapper {
+    display: flex;
+}
+
+.recipe > .wrapper.recipe-ingredients, .recipe .recipe-info > .wrapper.recipe-ingredients {
+    margin: 42px auto 38px;
+}
+
+.recipe .ingredients-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: -4px 0 19px;
+}
+
+.recipe > .wrapper.recipe-ingredients h3, .recipe .recipe-info > .wrapper.recipe-ingredients h3 {
+    margin: 0;
+}
+.h4-text {
+    font-size: 24px;
+    line-height: 1.333333333333333;
+}
+.primary-dark {
+    color: #232323;
+}
+.IngredientLine {
+    padding: 0.5em 0;
+    font-size: 16px;
+    line-height: 1.5;
+}
 
 </style>
 
