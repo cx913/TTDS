@@ -118,24 +118,6 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class NutritionalInfo(models.Model):
-    fsa_lights_per100g = models.TextField(blank=True, null=True)
-    id = models.TextField(primary_key=True, blank=True)
-    ingredients = models.TextField(blank=True, null=True)
-    instructions = models.TextField(blank=True, null=True)
-    nutr_per_ingredient = models.TextField(blank=True, null=True)
-    nutr_values_per100g = models.TextField(blank=True, null=True)
-    quantity = models.TextField(blank=True, null=True)
-    title = models.TextField(blank=True, null=True)
-    unit = models.TextField(blank=True, null=True)
-    url = models.TextField(blank=True, null=True)
-    weight_per_ingr = models.TextField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'nutritional_info'
-
-
 class RecipeRecipe(models.Model):
     name = models.CharField(max_length=255)
 
@@ -160,16 +142,9 @@ class Recipes(models.Model):
     title = models.TextField(blank=True, null=True)
     id = models.TextField(primary_key=True, blank=True)
     instructions = models.TextField(blank=True, null=True)
-
+    nutrition = models.TextField(blank=True, null=True)
+    image = models.TextField(blank=True, null=True)
+    tag = models.TextField(blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'recipes'
-
-
-class Images(models.Model):
-    id = models.TextField(primary_key=True)
-    images = models.JSONField()
-
-    class Meta:
-        managed = False
-        db_table = 'images'

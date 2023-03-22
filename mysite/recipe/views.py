@@ -3,11 +3,12 @@ from django.shortcuts import render
 from django.views import View
 from django.contrib.staticfiles.views import serve
 from django.http import JsonResponse
-from .models import Recipes, NutritionalInfo, Images
+from .models import Recipes
 import pickle
 import math
 from . import query_process as qp
 from pathlib import Path
+from itertools import chain
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -109,6 +110,7 @@ def search_results(request):
                     break
                 # first retrive
                 if limit_count == 0:
+
                     data = Recipes.objects.filter(
                         id=doc_id
                     )
