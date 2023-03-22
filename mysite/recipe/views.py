@@ -42,15 +42,15 @@ def search_results(request):
         fat_min = request.POST['fat-min']
         protein_min = request.POST['protein-min']
         salts_min = request.POST['salt-min']
-        saturates_min = request.POST['saturates-min']
-        sugars_min = request.POST['sugars-min']
+        saturates_min = request.POST['saturate-min']
+        sugars_min = request.POST['sugar-min']
 
         energy_max = request.POST['energy-max']
         fat_max = request.POST['fat-max']
         protein_max = request.POST['protein-max']
         salts_max = request.POST['salt-max']
-        saturates_max = request.POST['saturates-max']
-        sugars_max = request.POST['sugars-max']
+        saturates_max = request.POST['saturate-max']
+        sugars_max = request.POST['sugar-max']
 
         filter_data = {}
 
