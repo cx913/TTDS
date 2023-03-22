@@ -10,6 +10,15 @@ BASE_DIR = Path(__file__).resolve().parent
 
 stop_words = set(stopwords.words('english'))
 
+
+def url_process(raw_url):
+    if raw_url is None:
+        return 'http://img.sndimg.com//food//image//upload//w_512,h_512,c_fit,fl_progressive,q_95//v1//img//recipes//47//91//49//picaYYmb9.jpg'
+    else:
+        url = raw_url.split('"')
+        return url[7]
+
+
 def nutrition_test(query, exact_value):
     # empty always true
     if query == '':
@@ -234,3 +243,8 @@ def tree_query(query, term_freq, doc_len, doc_num):
 # #print(bm_list)
 # print(bm_list)
 # print(ir_list)
+# raw_url = '[{"id":"cb1a684683.jpg","url":"http://assets.epicurious.com/photos/5609a4d662fa7a9917c25748/master/pass/351294_hires.jpg"}]'
+#
+#
+# p = url_process(raw_url)
+# print(p)

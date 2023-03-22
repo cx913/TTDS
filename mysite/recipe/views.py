@@ -130,6 +130,7 @@ def search_results(request):
 
 def show_recipe(request, recipe_id):
     recipe = Recipes.objects.get(id=recipe_id)
+    recipe.image = qp.url_process(recipe.image)
     # nutritionalInfo = NutritionalInfo.objects.get(title=recipe.title)
     instructions_list = recipe.instructions.replace('text', '').replace('"', '').replace('[', '').replace(']',
                                                                                                           '').replace(
