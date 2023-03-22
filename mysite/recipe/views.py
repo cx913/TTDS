@@ -38,13 +38,22 @@ def search_results(request):
         # low case
         query = query.lower()
         # nutrition info
-        energy = request.POST['energy']
-        fat = request.POST['fat']
-        protein = request.POST['protein']
-        salts = request.POST['salts']
-        saturates = request.POST['saturates']
-        sugars = request.POST['sugars']
-        filter_check = request.POST.get('filter', False)
+        energy_min = request.POST['energy-min']
+        fat_min = request.POST['fat-min']
+        protein_min = request.POST['protein-min']
+        salts_min = request.POST['salt-min']
+        saturates_min = request.POST['saturates-min']
+        sugars_min = request.POST['sugars-min']
+
+        energy_max = request.POST['energy-max']
+        fat_max = request.POST['fat-max']
+        protein_max = request.POST['protein-max']
+        salts_max = request.POST['salt-max']
+        saturates_max = request.POST['saturates-max']
+        sugars_max = request.POST['sugars-max']
+
+        filter_data = {}
+
 
         bm25_list = dict(
             sorted(qp.tree_query(query, term_frequency, doc_len, doc_num).items(), key=lambda kv: kv[1],
@@ -58,74 +67,74 @@ def search_results(request):
         search_limit = 5000
         all_data = None
         #check box
-        if filter_check == 'filter':
-            for doc_id in ir_list:
-                # check if reach the limit
-                nutrition = NutritionalInfo.objects.filter(
-                     id=doc_id
-                 )
-                search_limit_count += 1
-                if search_limit_count == search_limit:
-                    break
-                if len(nutrition) == 0:
-                    continue
-                # get values
-                values = nutrition[0].nutr_values_per100g
-                values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
-                values = values.split(',')
-                for value in values:
-                    if value == '':
-                       value = '0'
-                values = [float(value) for value in values]
-                # test
-                f1 = qp.nutrition_test(energy, values[0])
-                f2 = qp.nutrition_test(fat, values[1])
-                f3 = qp.nutrition_test(protein, values[2])
-                f4 = qp.nutrition_test(salts, values[3])
-                f5 = qp.nutrition_test(saturates, values[4])
-                f6 = qp.nutrition_test(sugars, values[5])
-                # filter
-                if not(f1 and f2 and f3 and f4 and f5 and f6):
-                    continue
-                if limit_count == limit:
-                    break
-                # first retrive
-                if limit_count == 0:
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = data
-                    limit_count += 1
-                else:
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = all_data | data
-                    limit_count += 1
-            return render(request, 'recipe/search_results.html', {'q': query, 'res': all_data})
-        else:
-            for doc_id in ir_list:
-                # check if reach the limit
-                if limit_count == limit:
-                    break
-                # first retrive
-                if limit_count == 0:
+        # if filter_check == 'filter':
+        #     for doc_id in ir_list:
+        #         # check if reach the limit
+        #         nutrition = NutritionalInfo.objects.filter(
+        #              id=doc_id
+        #          )
+        #         search_limit_count += 1
+        #         if search_limit_count == search_limit:
+        #             break
+        #         if len(nutrition) == 0:
+        #             continue
+        #         # get values
+        #         values = nutrition[0].nutr_values_per100g
+        #         values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
+        #         values = values.split(',')
+        #         for value in values:
+        #             if value == '':
+        #                value = '0'
+        #         values = [float(value) for value in values]
+        #         # test
+        #         f1 = qp.nutrition_test(energy, values[0])
+        #         f2 = qp.nutrition_test(fat, values[1])
+        #         f3 = qp.nutrition_test(protein, values[2])
+        #         f4 = qp.nutrition_test(salts, values[3])
+        #         f5 = qp.nutrition_test(saturates, values[4])
+        #         f6 = qp.nutrition_test(sugars, values[5])
+        #         # filter
+        #         if not(f1 and f2 and f3 and f4 and f5 and f6):
+        #             continue
+        #         if limit_count == limit:
+        #             break
+        #         # first retrive
+        #         if limit_count == 0:
+        #             data = Recipes.objects.filter(
+        #                 id=doc_id
+        #             )
+        #             all_data = data
+        #             limit_count += 1
+        #         else:
+        #             data = Recipes.objects.filter(
+        #                 id=doc_id
+        #             )
+        #             all_data = all_data | data
+        #             limit_count += 1
+        #     return render(request, 'recipe/search_results_test.html', {'q': query, 'res': all_data, 'filter': filter_data})
+        # else:
+        for doc_id in ir_list:
+            # check if reach the limit
+            if limit_count == limit:
+                break
+            # first retrive
+            if limit_count == 0:
 
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = data
-                    limit_count += 1
-                else:
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = all_data | data
-                    limit_count += 1
-        return render(request, 'recipe/search_results.html', {'q': query, 'res': all_data})
+                data = Recipes.objects.filter(
+                    id=doc_id
+                )
+                all_data = data
+                limit_count += 1
+            else:
+                data = Recipes.objects.filter(
+                    id=doc_id
+                )
+                all_data = all_data | data
+                limit_count += 1
+        return render(request, 'recipe/search_results_test.html', {'q': query, 'res': all_data, 'filter':filter_data})
     else:
         query = request.POST.get('q')
-        return render(request, 'recipe/search_results.html', {})
+        return render(request, 'recipe/search_results_test.html', {})
 
 
 def show_recipe(request, recipe_id):
