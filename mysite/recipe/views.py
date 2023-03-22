@@ -46,13 +46,24 @@ def search_results(request):
         sugars = request.POST['sugars']
         filter_check = request.POST.get('filter', False)
 
+        if query.find('title:') == 0:
+            recipe = Recipes.objects.filter(
+                title__contains=query[6:]
+            )
+            return render(request, 'recipe/search_results.html', {'q': query, 'res': recipe[:200]})
+        elif query.find('tag:') == 0:
+            recipe = Recipes.objects.filter(
+                tag__contains=query[4:]
+            )
+            return render(request, 'recipe/search_results.html', {'q': query, 'res': recipe[:200]})
+
         bm25_list = dict(
             sorted(qp.tree_query(query, term_frequency, doc_len, doc_num).items(), key=lambda kv: kv[1],
                     reverse=True))
         ir_list = bm25_list.keys()
 
         limit_count = 0
-        limit = 50
+        limit = 200
         # for filter
         search_limit_count = 0
         search_limit = 5000
