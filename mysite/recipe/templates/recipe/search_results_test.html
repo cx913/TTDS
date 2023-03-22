@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Yummly Clone</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/css/ionicons.min.css" integrity="sha512-rhNy6EmCn46vwo1GMgN1fY/x2wFKsP15lG+i52Ild7NFuqlQ0jiv8VvBxJKNg7VU0w6/CW8jvKJP6F4q3/jzOw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		.left {
+      position: fixed;
+			left: 0;
+			top: 0;
+			height: 100%;
+			width: 15%;
+			background-color: #f2f2f2;
+			box-shadow: 5px 0 15px rgba(0,0,0,0.2); /* modified shadow */
+			z-index: 1;
+		}
+		.right {
+			margin-left: 15%;
+			height: 100%;
+			padding: 50px 20px 20px;
+			box-sizing: border-box;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+    .search-box-wrapper {
+			position: relative;
+			height: 60px; /* modified height */
+			width: 100%;
+			max-width: 600px;
+			margin-bottom: 20px;
+			box-shadow: 0px 5px 15px rgba(0,0,0,0.1); /* modified shadow */
+			border-radius: 30px; /* modified border radius */
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.search-box {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			padding: 0 40px 0 60px;
+			border: none;
+			background-color: transparent;
+			font-size: 24px;
+			box-sizing: border-box;
+			color: #333;
+			font-weight: bold;
+			padding-right: 10px;
+			outline: none; /* remove outline on focus */
+		}
+		.ion-icon {
+			position: absolute;
+			top: 50%;
+			left: 10px;
+			color: #ccc;
+			font-size: 40px;
+			transform: translateY(-50%);
+			padding-right: 10px;
+		}
+        .line {
+            height: 1px;
+            width: 100%;
+            margin: 20px 0;
+            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+            background-color: #f2f2f2;
+        }
+
+        .recipe-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.recipe-card {
+    width: calc(20% - 20px); /* 20% width for 5 cards in a row with 20px gap */
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+.recipe-card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.recipe-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.recipe-card h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.recipe-card p {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 0;
+}
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+    height: 200px; /* Set the desired height for the images */
+}
+
+.recipe-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.myrecipes-header {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 30px;
+  text-align: center;
+}
+
+.myrecipes-header h1 {
+  font-size: 30px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #333;
+  letter-spacing: 2px;
+}
+
+.nutrition-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  max-width: 300px;
+}
+.nutrition-filters div {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.nutrition-filters label {
+  margin-right: 10px;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+.slider-value {
+  margin-left: 10px;
+  font-size: 16px;
+  color: #666;
+  display: flex;
+  align-items: center;
+}
+	</style>
+</head>
+<body>
+	<div class="left">
+        <!-- selection bar content here -->
+        <div class="myrecipes-header">
+            <h1>MyRecipes</h1>
+            <div class="nutrition-filters">
+            <h2>Nutrition</h2>
+              <div>
+                <label for="fat">Fat</label>
+                <input type="range" id="fat" name="fat" min="0" max="100" value="50">
+                <span class="slider-value">50</span>
+              </div>
+              <div>
+                <label for="ngr">Ngr</label>
+                <input type="range" id="ngr" name="ngr" min="0" max="100" value="50">
+                <span class="slider-value">50</span>
+              </div>
+              <div>
+                <label for="pro">Pro</label>
+                <input type="range" id="pro" name="pro" min="0" max="100" value="50">
+                <span class="slider-value">50</span>
+              </div>
+              <div>
+                <label for="sat">Sat</label>
+                <input type="range" id="sat" name="sat" min="0" max="100" value="50">
+                <span class="slider-value">50</span>
+              </div>
+              <div>
+                <label for="sod">Sod</label>
+                <input type="range" id="sod" name="sod" min="0" max="100" value="50">
+                <span class="slider-value">50</span>
+              </div>
+              <div>
+                <label for="sug">Sug</label>
+                <input type="range" id="sug" name="sug" min="0" max="100" value="50">
+                <span class="slider-value">50</span>
+              </div>
+            </div>
+        </div>
+      </div>
+      
+	<div class="right">
+    <div class="search-box-wrapper">
+      <ion-icon class="ion-icon" name="search-outline"></ion-icon>
+      <input type="text" class="search-box" placeholder="Search...">
+    </div>
+		<!-- search results content here -->
+        <div class="line"></div>
+        
+
+        <div class="recipe-cards-container">
+            <div class="recipe-card">
+                <div class="image-container">
+                    <img src="http:\/\/img.sndimg.com\/food\/image\/upload\/w_512,h_512,c_fit,fl_progressive,q_95\/v1\/img\/recipes\/47\/91\/49\/picaYYmb9.jpg" alt="Recipe 1">
+                </div>
+                    <h3>Recipe 1</h3>
+                <p>Recipe 1 description</p>
+            </div>
+            
+            
+            
+            {% for recipe in recipe_objects %}
+            
+            <div class="recipe-card">
+              <div class="image-container" href="{% url 'show-recipe' recipe.id %}">
+                
+                    
+                    <img src="http://www.sagarikaelectronics.com/sagarika_admin/dist/img/no-image.png" alt="image_not_found">
+                
+                </div>
+              <h3>{{ recipe.title }}</h3>
+              <p>{{ recipe.ingredients }}</p>
+            </div>
+            {% endfor %}
+
+            <!-- Add more recipe cards as needed -->
+        </div>
+            
+            
+            
+     
+	</div>
+    <script>
+const sliders = document.querySelectorAll("input[type='range']");
+sliders.forEach(slider => {
+  const sliderValue = slider.parentElement.querySelector('.slider-value');
+  slider.addEventListener('input', () => {
+    sliderValue.textContent = slider.value;
+  });
+});
+    </script>
+	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
