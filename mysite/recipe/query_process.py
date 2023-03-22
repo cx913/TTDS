@@ -10,6 +10,15 @@ BASE_DIR = Path(__file__).resolve().parent
 
 stop_words = set(stopwords.words('english'))
 
+def filter_check(mins,maxs):
+    for min in mins:
+        if min != 0:
+            return True
+    for max in maxs:
+        if max != 200:
+            return True
+    return False
+
 
 def url_process(raw_url):
     if raw_url is None:
@@ -19,48 +28,10 @@ def url_process(raw_url):
         return url[7]
 
 
-def nutrition_test(query, exact_value):
-    # empty always true
-    if query == '':
+def nutrition_test(min, max, exact_value):
+    if min <= exact_value and max >= exact_value:
         return True
-    if len(query) < 2:
-        return False
-    if query[:2] == '>=':
-        value = float(''.join((c for c in query[1:] if c.isdigit())))
-        # check nan
-        if value != value:
-            return False
-        return exact_value >= value
-    elif query[:2] == '<=':
-        value = ''.join((c for c in query[1:] if c.isdigit()))
-        # check nan
-        if value == '':
-            return False
-        value = float(value)
-        return exact_value <= value
-    elif query[0] == '=':
-        value = float(''.join((c for c in query[1:] if c.isdigit())))
-        # check nan
-        if value == '':
-            return False
-        value = float(value)
-        return exact_value == value
-    elif query[0] == '<':
-        value = float(''.join((c for c in query[1:] if c.isdigit())))
-        # check nan
-        if value == '':
-            return False
-        value = float(value)
-        return exact_value < value
-    elif query[0] == '>':
-        value = float(''.join((c for c in query[1:] if c.isdigit())))
-        # check nan
-        if value == '':
-            return False
-        value = float(value)
-        return exact_value > value
     else:
-        # wrong grammar
         return False
 
 def merge_dict(b, x, y):

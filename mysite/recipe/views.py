@@ -78,7 +78,9 @@ def search_results(request):
         search_limit = 5000
         all_data = None
         #check box
-        if filter_check == 'filter':
+        mins = [energy_min, fat_min, protein_min, salts_min, saturates_min, sugars_min]
+        maxs = [energy_max, fat_max, protein_max, salts_max, saturates_max, sugars_max]
+        if qp.filter_check(mins, maxs):
             for doc_id in ir_list:
                 # check if reach the limit
                 search_limit_count += 1
@@ -98,12 +100,12 @@ def search_results(request):
                        value = '0'
                 values = [float(value) for value in values]
                 # test
-                f1 = qp.nutrition_test(energy, values[0])
-                f2 = qp.nutrition_test(fat, values[1])
-                f3 = qp.nutrition_test(protein, values[2])
-                f4 = qp.nutrition_test(salts, values[3])
-                f5 = qp.nutrition_test(saturates, values[4])
-                f6 = qp.nutrition_test(sugars, values[5])
+                f1 = qp.nutrition_test(energy_min, energy_max, values[0])
+                f2 = qp.nutrition_test(fat_min, fat_max, values[1])
+                f3 = qp.nutrition_test(protein_min, protein_max, values[2])
+                f4 = qp.nutrition_test(salts_min, salts_max, values[3])
+                f5 = qp.nutrition_test(saturates_min, saturates_max, values[4])
+                f6 = qp.nutrition_test(sugars_min, sugars_max, values[5])
                 # filter
                 if not(f1 and f2 and f3 and f4 and f5 and f6):
                     continue
