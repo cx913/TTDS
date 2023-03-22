@@ -164,3 +164,12 @@ class Recipes(models.Model):
     class Meta:
         managed = False
         db_table = 'recipes'
+
+
+class Images(models.Model):
+    id = models.TextField(primary_key=True)
+    images = models.JSONField()
+
+    class Meta:
+        managed = False
+        db_table = 'images'

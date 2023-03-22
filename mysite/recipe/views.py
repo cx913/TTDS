@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.contrib.staticfiles.views import serve
 from django.http import JsonResponse
-from .models import Recipes, NutritionalInfo
+from .models import Recipes, NutritionalInfo, Images
 import pickle
 import math
 from . import query_process as qp
@@ -155,5 +155,3 @@ def show_recipe(request, recipe_id):
     # return render(request, 'recipe/show_recipe.html', {'recipe': recipe, 'nutritionalInfo': nutritionalInfo})
     return render(request, 'recipe/show_recipe.html', {'recipe': recipe})
 
-# class HomePageView(TemplateView):
-#     template_name = 'recipe/home.html'
