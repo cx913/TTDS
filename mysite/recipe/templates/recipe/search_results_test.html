@@ -18,6 +18,9 @@
 			background-color: #f2f2f2;
 			box-shadow: 5px 0 15px rgba(0,0,0,0.2); /* modified shadow */
 			z-index: 1;
+             display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 		}
 		.right {
 			margin-left: 15%;
@@ -153,24 +156,46 @@
 
 .nutrition-filters {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+  {#flex-wrap: wrap;#}
+  {#justify-content: center;#}
+  {#align-items: center;#}
   margin: auto;
   max-width: 300px;
-}
-.nutrition-filters div {
-  display: flex;
-  align-items: center;
-  padding: 10px;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
 }
 
-.nutrition-filters label {
-  margin-right: 10px;
-  font-weight: bold;
-  color: #333;
-  font-size: 14px;
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .filter-label-value {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.slider-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
 }
+{#.nutrition-filters div {#}
+{#  display: flex;#}
+{#  align-items: center;#}
+{#  padding: 10px;#}
+{#}#}
+
+{#.nutrition-filters label {#}
+{#  margin-right: 10px;#}
+{#  font-weight: bold;#}
+{#  color: #333;#}
+{#  font-size: 14px;#}
+{#}#}
 
 .slider-value {
   margin-left: 10px;
@@ -179,58 +204,238 @@
   display: flex;
   align-items: center;
 }
+
+
+ input[type="range"]{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    outline: none;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    background-color: transparent;
+    pointer-events: none;
+}
+.slider-track{
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    border-radius: 5px;
+}
+input[type="range"]::-webkit-slider-runnable-track{
+    -webkit-appearance: none;
+    height: 5px;
+}
+input[type="range"]::-moz-range-track{
+    -moz-appearance: none;
+    height: 5px;
+}
+input[type="range"]::-ms-track{
+    appearance: none;
+    height: 5px;
+}
+input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    background-color: #3264fe;
+    cursor: pointer;
+    margin-top: -9px;
+    pointer-events: auto;
+    border-radius: 50%;
+}
+input[type="range"]::-moz-range-thumb{
+    -webkit-appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #3264fe;
+    pointer-events: auto;
+}
+input[type="range"]::-ms-thumb{
+    appearance: none;
+    height: 1.7em;
+    width: 1.7em;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #3264fe;
+    pointer-events: auto;
+}
+input[type="range"]:active::-webkit-slider-thumb{
+    background-color: #ffffff;
+    border: 3px solid #3264fe;
+}
+
+.slider-container{
+
+}
+
 	</style>
 </head>
 <body>
+<form  id="filter-form" method="post" action="{% url 'search-results' %}">
 	<div class="left">
         <!-- selection bar content here -->
         <div class="myrecipes-header">
             <h1>MyRecipes</h1>
             <div class="nutrition-filters">
-            <h2>Nutrition</h2>
-              <div>
-                <label for="fat">Fat</label>
-                <input type="range" id="fat" name="fat" min="0" max="100" value="50">
-                <span class="slider-value">50</span>
-              </div>
-              <div>
-                <label for="ngr">Ngr</label>
-                <input type="range" id="ngr" name="ngr" min="0" max="100" value="50">
-                <span class="slider-value">50</span>
-              </div>
-              <div>
-                <label for="pro">Pro</label>
-                <input type="range" id="pro" name="pro" min="0" max="100" value="50">
-                <span class="slider-value">50</span>
-              </div>
-              <div>
-                <label for="sat">Sat</label>
-                <input type="range" id="sat" name="sat" min="0" max="100" value="50">
-                <span class="slider-value">50</span>
-              </div>
-              <div>
-                <label for="sod">Sod</label>
-                <input type="range" id="sod" name="sod" min="0" max="100" value="50">
-                <span class="slider-value">50</span>
-              </div>
-              <div>
-                <label for="sug">Sug</label>
-                <input type="range" id="sug" name="sug" min="0" max="100" value="50">
-                <span class="slider-value">50</span>
-              </div>
+            <h2>Nutrition Filter</h2>
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="energy"> Energy: </label>
+
+                <div class="values">
+                    <span id="filter-energy-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-energy-max-val">200</span>
+                </div>
             </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "energy-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-energy-min" name="energy-min" oninput="energy_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-energy-max" name="energy-max" oninput="energy_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="fat"> Fat: </label>
+
+                <div class="values">
+                    <span id="filter-fat-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-fat-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "fat-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-fat-min" name="fat-min" oninput="fat_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-fat-max" name="fat-max" oninput="fat_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="protein"> Protein: </label>
+
+                <div class="values">
+                    <span id="filter-protein-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-protein-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "protein-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-protein-min" name="protein-min" oninput="protein_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-protein-max" name="protein-max" oninput="protein_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="salt"> Salt: </label>
+
+                <div class="values">
+                    <span id="filter-salt-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-salt-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "salt-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-salt-min" name="salt-min" oninput="salt_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-salt-max" name="salt-max" oninput="salt_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="saturate"> Saturates: </label>
+
+                <div class="values">
+                    <span id="filter-saturate-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-saturate-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "saturate-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-saturate-min" name="saturate-min" oninput="saturate_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-saturate-max" name="saturate-max" oninput="saturate_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="sugar"> Sugars: </label>
+
+                <div class="values">
+                    <span id="filter-sugar-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-sugar-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "sugar-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-sugar-min" name="sugar-min" oninput="sugar_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-sugar-max" name="sugar-max" oninput="sugar_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+
+
+
+            </div>
+
         </div>
       </div>
       
 	<div class="right">
     <div class="search-box-wrapper">
       <ion-icon class="ion-icon" name="search-outline"></ion-icon>
-      <input type="text" class="search-box" placeholder="Search...">
+        {% csrf_token %}
+
+      <input type="text" class="search-box" id="search-input" name="q" placeholder="Search...">
     </div>
 		<!-- search results content here -->
         <div class="line"></div>
         
-
+        <p>Sugar min: {{ filter.sugar_min }}</p>
         <div class="recipe-cards-container">
             <div class="recipe-card">
                 <div class="image-container">
@@ -242,7 +447,7 @@
             
             
             
-            {% for recipe in recipe_objects %}
+            {% for recipe in res %}
             
             <div class="recipe-card">
               <div class="image-container" href="{% url 'show-recipe' recipe.id %}">
@@ -256,7 +461,6 @@
             </div>
             {% endfor %}
 
-            <!-- Add more recipe cards as needed -->
         </div>
             
             
@@ -264,15 +468,211 @@
      
 	</div>
     <script>
-const sliders = document.querySelectorAll("input[type='range']");
-sliders.forEach(slider => {
-  const sliderValue = slider.parentElement.querySelector('.slider-value');
-  slider.addEventListener('input', () => {
-    sliderValue.textContent = slider.value;
-  });
-});
+window.onload = function(){
+    sugar_slideOne();
+    sugar_slideTwo();
+}
+let sugar_sliderOne = document.getElementById("filter-sugar-min");
+let sugar_sliderTwo = document.getElementById("filter-sugar-max");
+let sugar_displayValOne = document.getElementById("filter-sugar-min-val");
+let sugar_displayValTwo = document.getElementById("filter-sugar-max-val");
+let sugar_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let sugar_sliderTrack = document.getElementById("sugar-slider-track");
+let sugar_sliderMaxValue = document.getElementById("filter-sugar-min").max;
+
+function sugar_slideOne(){
+    if(parseInt(sugar_sliderTwo.value) - parseInt(sugar_sliderOne.value) <= sugar_minGap){
+        sugar_sliderOne.value = parseInt(sugar_sliderTwo.value) - sugar_minGap;
+    }
+    sugar_displayValOne.textContent = sugar_sliderOne.value;
+    sugar_fillColor();
+}
+function sugar_slideTwo(){
+    if(parseInt(sugar_sliderTwo.value) - parseInt(sugar_sliderOne.value) <= sugar_minGap){
+        sugar_sliderTwo.value = parseInt(sugar_sliderOne.value) + sugar_minGap;
+    }
+    sugar_displayValTwo.textContent = sugar_sliderTwo.value;
+    sugar_fillColor();
+}
+function sugar_fillColor(){
+    sugar_percent1 = (sugar_sliderOne.value / sugar_sliderMaxValue) * 100;
+    sugar_percent2 = (sugar_sliderTwo.value / sugar_sliderMaxValue) * 100;
+    sugar_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${sugar_percent1}% , #3264fe ${sugar_percent1}% , #3264fe ${sugar_percent2}%, #dadae5 ${sugar_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    saturate_slideOne();
+    saturate_slideTwo();
+}
+let saturate_sliderOne = document.getElementById("filter-saturate-min");
+let saturate_sliderTwo = document.getElementById("filter-saturate-max");
+let saturate_displayValOne = document.getElementById("filter-saturate-min-val");
+let saturate_displayValTwo = document.getElementById("filter-saturate-max-val");
+let saturate_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let saturate_sliderTrack = document.getElementById("saturate-slider-track");
+let saturate_sliderMaxValue = document.getElementById("filter-saturate-min").max;
+
+function saturate_slideOne(){
+    if(parseInt(saturate_sliderTwo.value) - parseInt(saturate_sliderOne.value) <= saturate_minGap){
+        saturate_sliderOne.value = parseInt(saturate_sliderTwo.value) - saturate_minGap;
+    }
+    saturate_displayValOne.textContent = saturate_sliderOne.value;
+    saturate_fillColor();
+}
+function saturate_slideTwo(){
+    if(parseInt(saturate_sliderTwo.value) - parseInt(saturate_sliderOne.value) <= saturate_minGap){
+        saturate_sliderTwo.value = parseInt(saturate_sliderOne.value) + saturate_minGap;
+    }
+    saturate_displayValTwo.textContent = saturate_sliderTwo.value;
+    saturate_fillColor();
+}
+function saturate_fillColor(){
+    saturate_percent1 = (saturate_sliderOne.value / saturate_sliderMaxValue) * 100;
+    saturate_percent2 = (saturate_sliderTwo.value / saturate_sliderMaxValue) * 100;
+    saturate_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${saturate_percent1}% , #3264fe ${saturate_percent1}% , #3264fe ${saturate_percent2}%, #dadae5 ${saturate_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    salt_slideOne();
+    salt_slideTwo();
+}
+let salt_sliderOne = document.getElementById("filter-salt-min");
+let salt_sliderTwo = document.getElementById("filter-salt-max");
+let salt_displayValOne = document.getElementById("filter-salt-min-val");
+let salt_displayValTwo = document.getElementById("filter-salt-max-val");
+let salt_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let salt_sliderTrack = document.getElementById("salt-slider-track");
+let salt_sliderMaxValue = document.getElementById("filter-salt-min").max;
+
+function salt_slideOne(){
+    if(parseInt(salt_sliderTwo.value) - parseInt(salt_sliderOne.value) <= salt_minGap){
+        salt_sliderOne.value = parseInt(salt_sliderTwo.value) - salt_minGap;
+    }
+    salt_displayValOne.textContent = salt_sliderOne.value;
+    salt_fillColor();
+}
+function salt_slideTwo(){
+    if(parseInt(salt_sliderTwo.value) - parseInt(salt_sliderOne.value) <= salt_minGap){
+        salt_sliderTwo.value = parseInt(salt_sliderOne.value) + salt_minGap;
+    }
+    salt_displayValTwo.textContent = salt_sliderTwo.value;
+    salt_fillColor();
+}
+function salt_fillColor(){
+    salt_percent1 = (salt_sliderOne.value / salt_sliderMaxValue) * 100;
+    salt_percent2 = (salt_sliderTwo.value / salt_sliderMaxValue) * 100;
+    salt_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${salt_percent1}% , #3264fe ${salt_percent1}% , #3264fe ${salt_percent2}%, #dadae5 ${salt_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    energy_slideOne();
+    energy_slideTwo();
+}
+let energy_sliderOne = document.getElementById("filter-energy-min");
+let energy_sliderTwo = document.getElementById("filter-energy-max");
+let energy_displayValOne = document.getElementById("filter-energy-min-val");
+let energy_displayValTwo = document.getElementById("filter-energy-max-val");
+let energy_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let energy_sliderTrack = document.getElementById("energy-slider-track");
+let energy_sliderMaxValue = document.getElementById("filter-energy-min").max;
+
+function energy_slideOne(){
+    if(parseInt(energy_sliderTwo.value) - parseInt(energy_sliderOne.value) <= energy_minGap){
+        energy_sliderOne.value = parseInt(energy_sliderTwo.value) - energy_minGap;
+    }
+    energy_displayValOne.textContent = energy_sliderOne.value;
+    energy_fillColor();
+}
+function energy_slideTwo(){
+    if(parseInt(energy_sliderTwo.value) - parseInt(energy_sliderOne.value) <= energy_minGap){
+        energy_sliderTwo.value = parseInt(energy_sliderOne.value) + energy_minGap;
+    }
+    energy_displayValTwo.textContent = energy_sliderTwo.value;
+    energy_fillColor();
+}
+function energy_fillColor(){
+    energy_percent1 = (energy_sliderOne.value / energy_sliderMaxValue) * 100;
+    energy_percent2 = (energy_sliderTwo.value / energy_sliderMaxValue) * 100;
+    energy_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${energy_percent1}% , #3264fe ${energy_percent1}% , #3264fe ${energy_percent2}%, #dadae5 ${energy_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    protein_slideOne();
+    protein_slideTwo();
+}
+let protein_sliderOne = document.getElementById("filter-protein-min");
+let protein_sliderTwo = document.getElementById("filter-protein-max");
+let protein_displayValOne = document.getElementById("filter-protein-min-val");
+let protein_displayValTwo = document.getElementById("filter-protein-max-val");
+let protein_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let protein_sliderTrack = document.getElementById("protein-slider-track");
+let protein_sliderMaxValue = document.getElementById("filter-protein-min").max;
+
+function protein_slideOne(){
+    if(parseInt(protein_sliderTwo.value) - parseInt(protein_sliderOne.value) <= protein_minGap){
+        protein_sliderOne.value = parseInt(protein_sliderTwo.value) - protein_minGap;
+    }
+    protein_displayValOne.textContent = protein_sliderOne.value;
+    protein_fillColor();
+}
+function protein_slideTwo(){
+    if(parseInt(protein_sliderTwo.value) - parseInt(protein_sliderOne.value) <= protein_minGap){
+        protein_sliderTwo.value = parseInt(protein_sliderOne.value) + protein_minGap;
+    }
+    protein_displayValTwo.textContent = protein_sliderTwo.value;
+    protein_fillColor();
+}
+function protein_fillColor(){
+    protein_percent1 = (protein_sliderOne.value / protein_sliderMaxValue) * 100;
+    protein_percent2 = (protein_sliderTwo.value / protein_sliderMaxValue) * 100;
+    protein_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${protein_percent1}% , #3264fe ${protein_percent1}% , #3264fe ${protein_percent2}%, #dadae5 ${protein_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    fat_slideOne();
+    fat_slideTwo();
+}
+let fat_sliderOne = document.getElementById("filter-fat-min");
+let fat_sliderTwo = document.getElementById("filter-fat-max");
+let fat_displayValOne = document.getElementById("filter-fat-min-val");
+let fat_displayValTwo = document.getElementById("filter-fat-max-val");
+let fat_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let fat_sliderTrack = document.getElementById("fat-slider-track");
+let fat_sliderMaxValue = document.getElementById("filter-fat-min").max;
+
+function fat_slideOne(){
+    if(parseInt(fat_sliderTwo.value) - parseInt(fat_sliderOne.value) <= fat_minGap){
+        fat_sliderOne.value = parseInt(fat_sliderTwo.value) - fat_minGap;
+    }
+    fat_displayValOne.textContent = fat_sliderOne.value;
+    fat_fillColor();
+}
+function fat_slideTwo(){
+    if(parseInt(fat_sliderTwo.value) - parseInt(fat_sliderOne.value) <= fat_minGap){
+        fat_sliderTwo.value = parseInt(fat_sliderOne.value) + fat_minGap;
+    }
+    fat_displayValTwo.textContent = fat_sliderTwo.value;
+    fat_fillColor();
+}
+function fat_fillColor(){
+    fat_percent1 = (fat_sliderOne.value / fat_sliderMaxValue) * 100;
+    fat_percent2 = (fat_sliderTwo.value / fat_sliderMaxValue) * 100;
+    fat_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${fat_percent1}% , #3264fe ${fat_percent1}% , #3264fe ${fat_percent2}%, #dadae5 ${fat_percent2}%)`;
+}
     </script>
 	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</form>
 </body>
 </html>
