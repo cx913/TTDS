@@ -1,84 +1,649 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Recipe App{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'recipe/css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'recipe/css/style.css' %}">
-{#    <link rel="stylesheet" href="{% static 'bootstrap5/css/bootstrap.css/bootstrap.min.css' %}">#}
-{#    <link rel="stylesheet" href="{% static 'bootstrap5/css/bootstrap-grid.css/bootstrap-grid.min.css' %}">#}
+{#    <title>{% block title %}Recipe App{% endblock %}</title>#}
+{#    <link rel="stylesheet" href="{% static 'recipe/css/base.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'recipe/css/style.css' %}">#}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/css/ionicons.min.css" integrity="sha512-rhNy6EmCn46vwo1GMgN1fY/x2wFKsP15lG+i52Ild7NFuqlQ0jiv8VvBxJKNg7VU0w6/CW8jvKJP6F4q3/jzOw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.3.0/mdb.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
 
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-      <script src="{% static 'recipe/js/script.js' %}"></script>
+    body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+            .left {
+          position: fixed;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 15%;
+                background-color: #f2f2f2;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.2); /* modified shadow */
+                z-index: 1;
+                 display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+            }
+            .right {
+                margin-left: 15%;
+                height: 100%;
+                padding: 50px 20px 20px;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        .search-box-wrapper {
+                position: relative;
+                height: 60px; /* modified height */
+                width: 100%;
+                max-width: 600px;
+                margin-bottom: 20px;
+                box-shadow: 0px 5px 15px rgba(0,0,0,0.1); /* modified shadow */
+                border-radius: 30px; /* modified border radius */
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .search-box {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                padding: 0 40px 0 60px;
+                border: none;
+                background-color: transparent;
+                font-size: 24px;
+                box-sizing: border-box;
+                color: #333;
+                font-weight: bold;
+                padding-right: 10px;
+                outline: none; /* remove outline on focus */
+            }
+            .ion-icon {
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                color: #ccc;
+                font-size: 40px;
+                transform: translateY(-50%);
+                padding-right: 10px;
+            }
+            .line {
+                height: 1px;
+                width: 100%;
+                margin: 20px 0;
+                box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+                background-color: #f2f2f2;
+            }
+
+            .recipe-cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .recipe-card {
+        width: calc(20% - 20px); /* 20% width for 5 cards in a row with 20px gap */
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        box-sizing: border-box;
+        transition: 0.3s;
+    }
+
+    .recipe-card:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .recipe-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    .recipe-card h3 {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .recipe-card p {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 0;
+    }
+
+    .image-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 5px;
+    }
+
+    .image-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 5px;
+        height: 200px; /* Set the desired height for the images */
+    }
+
+    .recipe-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .myrecipes-header {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .myrecipes-header h1 {
+      font-size: 30px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #333;
+      letter-spacing: 2px;
+    }
+
+    .nutrition-filters {
+      display: flex;
+
+      margin: auto;
+      max-width: 300px;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+    }
+
+      .filter-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+
+      .filter-label-value {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+    .slider-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding-top: 40px;
+    }
+
+    .slider-value {
+      margin-left: 10px;
+      font-size: 16px;
+      color: #666;
+      display: flex;
+      align-items: center;
+    }
+
+
+     input[type="range"]{
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 100%;
+        outline: none;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        background-color: transparent;
+        pointer-events: none;
+    }
+    .slider-track{
+        width: 100%;
+        height: 5px;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        border-radius: 5px;
+    }
+    input[type="range"]::-webkit-slider-runnable-track{
+        -webkit-appearance: none;
+        height: 5px;
+    }
+    input[type="range"]::-moz-range-track{
+        -moz-appearance: none;
+        height: 5px;
+    }
+    input[type="range"]::-ms-track{
+        appearance: none;
+        height: 5px;
+    }
+    input[type="range"]::-webkit-slider-thumb{
+        -webkit-appearance: none;
+        height: 1.7em;
+        width: 1.7em;
+        background-color: #3264fe;
+        cursor: pointer;
+        margin-top: -9px;
+        pointer-events: auto;
+        border-radius: 50%;
+    }
+    input[type="range"]::-moz-range-thumb{
+        -webkit-appearance: none;
+        height: 1.7em;
+        width: 1.7em;
+        cursor: pointer;
+        border-radius: 50%;
+        background-color: #3264fe;
+        pointer-events: auto;
+    }
+    input[type="range"]::-ms-thumb{
+        appearance: none;
+        height: 1.7em;
+        width: 1.7em;
+        cursor: pointer;
+        border-radius: 50%;
+        background-color: #3264fe;
+        pointer-events: auto;
+    }
+    input[type="range"]:active::-webkit-slider-thumb{
+        background-color: #ffffff;
+        border: 3px solid #3264fe;
+    }
+
+    h3{
+            padding-top: 30px;
+    padding-bottom: 30px;
+    }
+
+        </style>
+	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   </head>
 
   <body>
-    {% include 'recipe/navbar.html' %}
 
-  <div class="container-fluid">
-      <div class="row">
-          <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-              <div class="position-sticky pt-3 sidebar-sticky">
-                  <ul class="nav flex-column">
-                      <li class="nav-item">
-                          <a class="nav-link active" aria-current="page" href="#">
-                              <span data-feather="home" class="align-text-bottom"></span>
-                              How To Use
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="#">
-                              <span data-feather="file" class="align-text-bottom"></span>
-                              FAQs
-                          </a>
-                      </li>
-                  </ul>
+<form  id="filter-form" method="post" action="{% url 'search-results' %}">
+	<div class="left">
+        <!-- selection bar content here -->
+        <div class="myrecipes-header">
+            <h1><a href="{% url 'home' %}">MyRecipes</a></h1>
+            <div class="nutrition-filters">
+            <h3>Nutrition Filter</h3>
 
-{#                  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">#}
-{#                      <span>Nutrition Filter</span>#}
-{#                      <a class="link-secondary" href="#" aria-label="Add a new report">#}
-{#                          <span data-feather="plus-circle" class="align-text-bottom"></span>#}
-{#                      </a>#}
-{#                  </h6>#}
-{#                  <ul class="nav flex-column mb-2">#}
-{#                      <li class="nav-item">#}
-{#                          <a class="nav-link" href="#">#}
-{#                              <span data-feather="file-text" class="align-text-bottom"></span>#}
-{#                              Fat#}
-{#                          </a>#}
-{#                      </li>#}
-{#                      <li class="nav-item">#}
-{#                          <a class="nav-link" href="#">#}
-{#                              <span data-feather="file-text" class="align-text-bottom"></span>#}
-{#                              Salt#}
-{#                          </a>#}
-{#                      </li>#}
-{#                      <li class="nav-item">#}
-{#                          <a class="nav-link" href="#">#}
-{#                              <span data-feather="file-text" class="align-text-bottom"></span>#}
-{#                              Saturates#}
-{#                          </a>#}
-{#                      </li>#}
-{#                      <li class="nav-item">#}
-{#                          <a class="nav-link" href="#">#}
-{#                              <span data-feather="file-text" class="align-text-bottom"></span>#}
-{#                              Sugars#}
-{#                          </a>#}
-{#                      </li>#}
-                  </ul>
-              </div>
-          </nav>
-          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
-              {% block content %}{% endblock %}
-          </main>
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="energy"> Energy: </label>
+
+                <div class="values">
+                    <span id="filter-energy-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-energy-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "energy-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-energy-min" name="energy-min" oninput="energy_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-energy-max" name="energy-max" oninput="energy_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="fat"> Fat: </label>
+
+                <div class="values">
+                    <span id="filter-fat-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-fat-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "fat-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-fat-min" name="fat-min" oninput="fat_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-fat-max" name="fat-max" oninput="fat_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="protein"> Protein: </label>
+
+                <div class="values">
+                    <span id="filter-protein-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-protein-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "protein-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-protein-min" name="protein-min" oninput="protein_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-protein-max" name="protein-max" oninput="protein_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="salt"> Salt: </label>
+
+                <div class="values">
+                    <span id="filter-salt-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-salt-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "salt-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-salt-min" name="salt-min" oninput="salt_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-salt-max" name="salt-max" oninput="salt_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="saturate"> Saturates: </label>
+
+                <div class="values">
+                    <span id="filter-saturate-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-saturate-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "saturate-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-saturate-min" name="saturate-min" oninput="saturate_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-saturate-max" name="saturate-max" oninput="saturate_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+        <div class="filter-item">
+            <div class="filter-label-value">
+                <label for="sugar"> Sugars: </label>
+
+                <div class="values">
+                    <span id="filter-sugar-min-val">0</span>
+                    <span> ‐ </span>
+                    <span id="filter-sugar-max-val">200</span>
+                </div>
+            </div>
+            <div class="slider-container">
+                {% csrf_token %}
+                <div class="slider-track" id = "sugar-slider-track" style="background: linear-gradient(to right, rgb(218, 218, 229) 0%, rgb(50, 100, 254) 0%, rgb(50, 100, 254) 100%, rgb(218, 218, 229) 100%);"></div>
+                <input type="range" min="0" max="200" value="0" id="filter-sugar-min" name="sugar-min" oninput="sugar_slideOne()" autocompleted="">
+                <input type="range" min="0" max="200" value="200" id="filter-sugar-max" name="sugar-max" oninput="sugar_slideTwo()" autocompleted="">
+            </div>
+
+        </div>
+
+
+
+
+
+
+            </div>
+
+        </div>
       </div>
 
-  </div>
+	<div class="right">
+    <div class="search-box-wrapper">
+      <ion-icon class="ion-icon" name="search-outline"></ion-icon>
+        {% csrf_token %}
+
+      <input type="text" class="search-box" id="search-input" name="q" placeholder="Search...">
+    </div>
+		<!-- search results content here -->
+        <div class="line"></div>
+
+        {% block content %} {% endblock %}
+
+
+
+	</div>
+    <script>
+window.onload = function(){
+    sugar_slideOne();
+    sugar_slideTwo();
+}
+let sugar_sliderOne = document.getElementById("filter-sugar-min");
+let sugar_sliderTwo = document.getElementById("filter-sugar-max");
+let sugar_displayValOne = document.getElementById("filter-sugar-min-val");
+let sugar_displayValTwo = document.getElementById("filter-sugar-max-val");
+let sugar_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let sugar_sliderTrack = document.getElementById("sugar-slider-track");
+let sugar_sliderMaxValue = document.getElementById("filter-sugar-min").max;
+
+function sugar_slideOne(){
+    if(parseInt(sugar_sliderTwo.value) - parseInt(sugar_sliderOne.value) <= sugar_minGap){
+        sugar_sliderOne.value = parseInt(sugar_sliderTwo.value) - sugar_minGap;
+    }
+    sugar_displayValOne.textContent = sugar_sliderOne.value;
+    sugar_fillColor();
+}
+function sugar_slideTwo(){
+    if(parseInt(sugar_sliderTwo.value) - parseInt(sugar_sliderOne.value) <= sugar_minGap){
+        sugar_sliderTwo.value = parseInt(sugar_sliderOne.value) + sugar_minGap;
+    }
+    sugar_displayValTwo.textContent = sugar_sliderTwo.value;
+    sugar_fillColor();
+}
+function sugar_fillColor(){
+    sugar_percent1 = (sugar_sliderOne.value / sugar_sliderMaxValue) * 100;
+    sugar_percent2 = (sugar_sliderTwo.value / sugar_sliderMaxValue) * 100;
+    sugar_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${sugar_percent1}% , #3264fe ${sugar_percent1}% , #3264fe ${sugar_percent2}%, #dadae5 ${sugar_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    saturate_slideOne();
+    saturate_slideTwo();
+}
+let saturate_sliderOne = document.getElementById("filter-saturate-min");
+let saturate_sliderTwo = document.getElementById("filter-saturate-max");
+let saturate_displayValOne = document.getElementById("filter-saturate-min-val");
+let saturate_displayValTwo = document.getElementById("filter-saturate-max-val");
+let saturate_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let saturate_sliderTrack = document.getElementById("saturate-slider-track");
+let saturate_sliderMaxValue = document.getElementById("filter-saturate-min").max;
+
+function saturate_slideOne(){
+    if(parseInt(saturate_sliderTwo.value) - parseInt(saturate_sliderOne.value) <= saturate_minGap){
+        saturate_sliderOne.value = parseInt(saturate_sliderTwo.value) - saturate_minGap;
+    }
+    saturate_displayValOne.textContent = saturate_sliderOne.value;
+    saturate_fillColor();
+}
+function saturate_slideTwo(){
+    if(parseInt(saturate_sliderTwo.value) - parseInt(saturate_sliderOne.value) <= saturate_minGap){
+        saturate_sliderTwo.value = parseInt(saturate_sliderOne.value) + saturate_minGap;
+    }
+    saturate_displayValTwo.textContent = saturate_sliderTwo.value;
+    saturate_fillColor();
+}
+function saturate_fillColor(){
+    saturate_percent1 = (saturate_sliderOne.value / saturate_sliderMaxValue) * 100;
+    saturate_percent2 = (saturate_sliderTwo.value / saturate_sliderMaxValue) * 100;
+    saturate_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${saturate_percent1}% , #3264fe ${saturate_percent1}% , #3264fe ${saturate_percent2}%, #dadae5 ${saturate_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    salt_slideOne();
+    salt_slideTwo();
+}
+let salt_sliderOne = document.getElementById("filter-salt-min");
+let salt_sliderTwo = document.getElementById("filter-salt-max");
+let salt_displayValOne = document.getElementById("filter-salt-min-val");
+let salt_displayValTwo = document.getElementById("filter-salt-max-val");
+let salt_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let salt_sliderTrack = document.getElementById("salt-slider-track");
+let salt_sliderMaxValue = document.getElementById("filter-salt-min").max;
+
+function salt_slideOne(){
+    if(parseInt(salt_sliderTwo.value) - parseInt(salt_sliderOne.value) <= salt_minGap){
+        salt_sliderOne.value = parseInt(salt_sliderTwo.value) - salt_minGap;
+    }
+    salt_displayValOne.textContent = salt_sliderOne.value;
+    salt_fillColor();
+}
+function salt_slideTwo(){
+    if(parseInt(salt_sliderTwo.value) - parseInt(salt_sliderOne.value) <= salt_minGap){
+        salt_sliderTwo.value = parseInt(salt_sliderOne.value) + salt_minGap;
+    }
+    salt_displayValTwo.textContent = salt_sliderTwo.value;
+    salt_fillColor();
+}
+function salt_fillColor(){
+    salt_percent1 = (salt_sliderOne.value / salt_sliderMaxValue) * 100;
+    salt_percent2 = (salt_sliderTwo.value / salt_sliderMaxValue) * 100;
+    salt_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${salt_percent1}% , #3264fe ${salt_percent1}% , #3264fe ${salt_percent2}%, #dadae5 ${salt_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    energy_slideOne();
+    energy_slideTwo();
+}
+let energy_sliderOne = document.getElementById("filter-energy-min");
+let energy_sliderTwo = document.getElementById("filter-energy-max");
+let energy_displayValOne = document.getElementById("filter-energy-min-val");
+let energy_displayValTwo = document.getElementById("filter-energy-max-val");
+let energy_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let energy_sliderTrack = document.getElementById("energy-slider-track");
+let energy_sliderMaxValue = document.getElementById("filter-energy-min").max;
+
+function energy_slideOne(){
+    if(parseInt(energy_sliderTwo.value) - parseInt(energy_sliderOne.value) <= energy_minGap){
+        energy_sliderOne.value = parseInt(energy_sliderTwo.value) - energy_minGap;
+    }
+    energy_displayValOne.textContent = energy_sliderOne.value;
+    energy_fillColor();
+}
+function energy_slideTwo(){
+    if(parseInt(energy_sliderTwo.value) - parseInt(energy_sliderOne.value) <= energy_minGap){
+        energy_sliderTwo.value = parseInt(energy_sliderOne.value) + energy_minGap;
+    }
+    energy_displayValTwo.textContent = energy_sliderTwo.value;
+    energy_fillColor();
+}
+function energy_fillColor(){
+    energy_percent1 = (energy_sliderOne.value / energy_sliderMaxValue) * 100;
+    energy_percent2 = (energy_sliderTwo.value / energy_sliderMaxValue) * 100;
+    energy_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${energy_percent1}% , #3264fe ${energy_percent1}% , #3264fe ${energy_percent2}%, #dadae5 ${energy_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    protein_slideOne();
+    protein_slideTwo();
+}
+let protein_sliderOne = document.getElementById("filter-protein-min");
+let protein_sliderTwo = document.getElementById("filter-protein-max");
+let protein_displayValOne = document.getElementById("filter-protein-min-val");
+let protein_displayValTwo = document.getElementById("filter-protein-max-val");
+let protein_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let protein_sliderTrack = document.getElementById("protein-slider-track");
+let protein_sliderMaxValue = document.getElementById("filter-protein-min").max;
+
+function protein_slideOne(){
+    if(parseInt(protein_sliderTwo.value) - parseInt(protein_sliderOne.value) <= protein_minGap){
+        protein_sliderOne.value = parseInt(protein_sliderTwo.value) - protein_minGap;
+    }
+    protein_displayValOne.textContent = protein_sliderOne.value;
+    protein_fillColor();
+}
+function protein_slideTwo(){
+    if(parseInt(protein_sliderTwo.value) - parseInt(protein_sliderOne.value) <= protein_minGap){
+        protein_sliderTwo.value = parseInt(protein_sliderOne.value) + protein_minGap;
+    }
+    protein_displayValTwo.textContent = protein_sliderTwo.value;
+    protein_fillColor();
+}
+function protein_fillColor(){
+    protein_percent1 = (protein_sliderOne.value / protein_sliderMaxValue) * 100;
+    protein_percent2 = (protein_sliderTwo.value / protein_sliderMaxValue) * 100;
+    protein_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${protein_percent1}% , #3264fe ${protein_percent1}% , #3264fe ${protein_percent2}%, #dadae5 ${protein_percent2}%)`;
+}
+    </script>
+    <script>
+window.onload = function(){
+    fat_slideOne();
+    fat_slideTwo();
+}
+let fat_sliderOne = document.getElementById("filter-fat-min");
+let fat_sliderTwo = document.getElementById("filter-fat-max");
+let fat_displayValOne = document.getElementById("filter-fat-min-val");
+let fat_displayValTwo = document.getElementById("filter-fat-max-val");
+let fat_minGap = 0;
+{#let sliderTrack = document.querySelector(".slider-track");#}
+let fat_sliderTrack = document.getElementById("fat-slider-track");
+let fat_sliderMaxValue = document.getElementById("filter-fat-min").max;
+
+function fat_slideOne(){
+    if(parseInt(fat_sliderTwo.value) - parseInt(fat_sliderOne.value) <= fat_minGap){
+        fat_sliderOne.value = parseInt(fat_sliderTwo.value) - fat_minGap;
+    }
+    fat_displayValOne.textContent = fat_sliderOne.value;
+    fat_fillColor();
+}
+function fat_slideTwo(){
+    if(parseInt(fat_sliderTwo.value) - parseInt(fat_sliderOne.value) <= fat_minGap){
+        fat_sliderTwo.value = parseInt(fat_sliderOne.value) + fat_minGap;
+    }
+    fat_displayValTwo.textContent = fat_sliderTwo.value;
+    fat_fillColor();
+}
+function fat_fillColor(){
+    fat_percent1 = (fat_sliderOne.value / fat_sliderMaxValue) * 100;
+    fat_percent2 = (fat_sliderTwo.value / fat_sliderMaxValue) * 100;
+    fat_sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${fat_percent1}% , #3264fe ${fat_percent1}% , #3264fe ${fat_percent2}%, #dadae5 ${fat_percent2}%)`;
+}
+    </script>
+</form>
+
+
   </body>
 </html>

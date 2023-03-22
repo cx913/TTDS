@@ -28,9 +28,6 @@ def home(request):
     return render(request, 'recipe/home.html')
 
 
-def serve_static(request, path):
-    return serve(request, path, insecure=True)
-
 
 def search_results(request):
     if request.method == "POST":
@@ -143,26 +140,42 @@ def show_recipe(request, recipe_id):
     instructions_list = recipe.instructions.replace('text', '').replace('"', '').replace('[', '').replace(']',
                                                                                                           '').replace(
         '{', '').replace('}', '').replace(':', '').split(',')
-    recipe_ingredients = []
+    recipe_instructions = []
     temp_instruction = ''
+
     for instruction in instructions_list:
         # temp_instruction = temp_instruction + ' ' + instruction
 
-        if temp_instruction.endswith('.') or temp_instruction.endswith('!'):
-            if instruction.startswith('('):
+        if temp_instruction.endswith('.') or temp_instruction.endswith('!') or temp_instruction.endswith(')'):
+            if instruction.startswith('(') or instruction.startswith(')'):
                 temp_instruction = temp_instruction + ' ' + instruction
-                recipe_ingredients.append(temp_instruction)
-                temp_instruction = ''
                 continue
-            recipe_ingredients.append(temp_instruction)
+            recipe_instructions.append(temp_instruction)
             temp_instruction = ''
         temp_instruction = temp_instruction + ' ' + instruction
-    if temp_instruction.endswith('.') or temp_instruction.endswith('!'):
-        recipe_ingredients.append(temp_instruction)
-    recipe.instructions = recipe_ingredients
-    recipe.ingredients = recipe.ingredients.replace('text', '').replace('"', '').replace('[', '').replace(']',
+    if temp_instruction.endswith('.') or temp_instruction.endswith('!') or temp_instruction.endswith(')'):
+        recipe_instructions.append(temp_instruction)
+    recipe.instructions = recipe_instructions
+    
+    ingredients_list = recipe.ingredients.replace('text', '').replace('"', '').replace('[', '').replace(']',
                                                                                                           '').replace(
         '{', '').replace('}', '').replace(':', '').split(',')
+    recipe_ingredients = []
+    temp_ingredient = ''
+    temp_ingredient_idx = 0
+
+    for idx, ingredient in enumerate(ingredients_list):
+        if '(' in ingredient and ')' not in ingredient:
+            temp_ingredient_idx = idx
+            temp_ingredient = ingredient
+            continue
+        elif ')' in ingredient and '(' not in ingredient:
+            if idx == (temp_ingredient_idx + 1) :
+                temp_ingredient = temp_ingredient + ' ' + ingredient
+            recipe_ingredients.append(temp_ingredient)
+        else:
+            recipe_ingredients.append(ingredient)
+    recipe.ingredients = recipe_ingredients
     # return render(request, 'recipe/show_recipe.html', {'recipe': recipe, 'nutritionalInfo': nutritionalInfo})
     return render(request, 'recipe/show_recipe.html', {'recipe': recipe})
 
