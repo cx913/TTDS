@@ -2,107 +2,80 @@
 
 {% block content %}
 
-{#     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">#}
-    <div class="app-content">
-     <div class="recipe">
-         <div class="breadcrumbs-wrapper wrapper"></div>
-
-        <div class="recipe-summary wrapper">
-            <div class="recipe-details">
-                <div class="primary-info-text">
-                    <div class="primary-info-left-wrapper">
-                        <h1 class="recipe-title font-bold h2-text primary-dark">
-                            {{ recipe.title }}
-                        </h1>
-                        <span class="attribution">
-                        </span>
-                    </div>
-                </div>
-                <div class="summary-item-wrapper">
-                    <div class="recipe-summary-item  h2-text">
-                        <span class="value font-light h2-text">
-                            {{ recipe.ingredients | length }}
-                        </span>
-                        <span class="unit font-normal p3-text">
-                            Ingredients
-                        </span>
-                    </div>
-                    <div class="recipe-summary-item unit h2-text">
-                        <span class="value font-light h2-text">
-                            35
-                        </span>
-                        <span class="unit font-normal p3-text">
-                            Minutes
-                        </span>
-                    </div>
-                    <div class="recipe-summary-item unit h2-text">
-                        <span class="value font-light h2-text">
-                            690
-                        </span>
-                        <span class="unit font-normal p3-text">
-                            Calories
-                        </span>
-                    </div>
-                </div>
-                <div class="recipe-interactions-wrapper">
-                    <a class="read-dir-btn btn-primary wrapper recipe-summary-full-directions p1-text" href="{{ recipe.url }}" title="Read Directions" aria-label="Read Directions">
-                        <span class="p3-text">Read Directions</span>
-                    </a>
-                </div>
-            </div>
-            <div class="recipe-details-image">
-                <img alt="Easy Roasted Tomato Soup" src="https://lh3.googleusercontent.com/UeQu1VPWsv_xY_gJo4hWtKUd7_5pZ8Etb4C-KZN69xNgJvBfcmZDj7BESMwnK6fxnjN534vjHB-vyM7uxHfZ=w640-h640-c-rw-v1-e365" class="recipe-image" data-pin-url="https://www.yummly.co.uk/recipe/Easy-Roasted-Tomato-Soup-2287716" data-pin-description="Easy Roasted Tomato Soup with Tomatoes, Garlic, Vegetable Stock, Olive Oil, Salt, Pepper, Basil." width="640" height="640" data-pin-nopin="" srcset="https://lh3.googleusercontent.com/UeQu1VPWsv_xY_gJo4hWtKUd7_5pZ8Etb4C-KZN69xNgJvBfcmZDj7BESMwnK6fxnjN534vjHB-vyM7uxHfZ=w1280-h1280-c-rw-v1-e365 2x">
-            </div>
-        </div>
-
-        <div class="recipe-horizontal-rule greyscale-4"><hr></div>
-
-         <div class="recipe-wrapper wrapper">
-             <div class="recipe-info wrapper">
-                 <div class="recipe-ingredients wrapper">
-                    <div class="ingredients-header exp-default" id="ingredients">
-                        <h3 class="ingredients-header-title title h4-text primary-dark">Ingredients</h3>
-                    </div>
-                     <div class="shopping-list-ingredients">
-                         {% for ingredient in recipe.ingredients %}
-                         <li class="IngredientLine">{{ ingredient }}</li>
-                                 {% endfor %}
-                     </div>
-                 </div>
-                 <div class="wrapper nutrition-wrapper">
-
-                 </div>
-             <div class="recipe-ingredients wrapper">
-                    <div class="ingredients-header exp-default" id="instructions">
-                        <h3 class="ingredients-header-title title h4-text primary-dark">Instructions</h3>
-                    </div>
-                     <div class="shopping-list-ingredients">
-                         {% for instruction in recipe.instructions %}
-                         <li class="IngredientLine">{{ instruction }}</li>
-                                 {% endfor %}
-                     </div>
-                 </div>
-             </div>
-         </div>
-
-     </div>
-
-
-
-
-                          </div>
-{#            <h2>Ingredients</h2>#}
-{#            <p style="white-space: pre-line">{{ recipe.ingredients }}</p> </br>#}
-{#            <h2>Instructions</h2>#}
-{#            <p style="white-space: pre-line">{{ recipe.instructions }}</p>#}
-{#            <h2>Nutrition</h2>#}
-           {#  <p style="white-space: pre-line">{{ nutritionalInfo.nutr_values_per100g }}</p>#}
-
 <style>
+.recipe {
+    display: flex;
+    box-sizing: border-box;
+    align-items: stretch;
+    margin: 0 auto;
+    flex-direction: column;
+}
 
-.p3-text, .card-info.article-embed .card-description, .tray-nutrition .nutritional-info .text, .onboarding-widget .recipe-card .card-title, .payment .payment-title .add-new, .payment-method .card-num-cards-group .last-four, .payment-method .card-num-cards-group .expire-date, .pro-universal-cta .sticky-header-subtitle, .thermometer-footer .legal-footer .legal-links, .view-nutrition .nutritional-info .text {
-    font-size: 14px;
-    line-height: 1.714285714285714;
+.recipe .blank-block {
+    max-width: 1000px;
+    padding-top: 100px;
+}
+
+.recipe-info{
+    padding-left: 20px;
+    display: flex;
+}
+
+.recipe-image {
+    height: 400px;
+    width: 50%;
+    object-fit: cover;
+    padding: 1rem;
+}
+
+.recipe-image img {
+    display: block;
+    width: 500px;
+    height: 500px;
+}
+
+.recipe-summary {
+    height: 500px;
+    width: 50%;
+    padding: 4rem;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.recipe-title {
+    font-size: 40px;
+    line-height: 1.2;
+}
+
+@media only screen and (max-width: 1279px)
+.summary-item-wrapper {
+    width: 26em;
+    margin: 20px -28px;
+}
+
+.summary-item-wrapper {
+    width: 32em;
+    margin: 50px -30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.recipe-summary-item {
+    flex: 1;
+    text-align: center;
+}
+
+.h2-text {
+    font-size: 40px;
+    line-height: 1.2;
+}
+
+.recipe-summary-item.unit {
+    border-left: 1px solid #bababa;
 }
 
 .font-normal {
@@ -110,256 +83,161 @@
     font-weight: 400;
 }
 
-.app-content {
-    overflow: auto;
-    position: relative;
-    flex: 1;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+.p3-text {
+    font-size: 15px;
+    line-height: 1.8;
 }
 
-.recipe .breadcrumbs-wrapper {
-    max-width: 978px;
-    padding-top: 102px;
-}
-
-.recipe {
-    box-sizing: border-box;
-    width: 100%;
-    min-height: calc(100vh - 60px);
-    margin: auto;
-}
-
-.recipe > .recipe-summary {
-    color: #4a4a4a;
-    margin-top: 32px;
-    {#max-width: 978px;#}
-    width: 100%;
-    display: flex;
-}
-
-.recipe > .wrapper, .recipe .recipe-info > .wrapper {
-    {#max-width: 760px;#}
-    width: 100%;
-    margin: 0 auto;
-}
-
-.recipe > .recipe-summary .recipe-details {
-    margin: auto 0.5em;
-}
-
-.recipe-details {
-    justify-content: center;
-}
-
-.recipe-details .primary-info-text .primary-info-left-wrapper {
-    line-height: 1.33;
-    width: 95%;
-}
-
-.h2-text, .text-input-wrapper.large-input .text-input::placeholder {
-    font-size: 40px;
-    line-height: 1.2;
-}
-
-@media only screen and (max-width: 1279px)
-.recipe > .recipe-summary .summary-item-wrapper {
-    width: 26em;
-    margin: 20px -28px;
-}
-
-.recipe > .recipe-summary .summary-item-wrapper {
-    width: 32em;
-    margin: 20px -10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.recipe-summary-item {
-    color: #4a4a4a;
-    flex: 1;
-    text-align: center;
-}
-
-.recipe-summary-item.unit {
-    border-left: 1px solid #bababa;
-}
-
-.recipe-summary-item {
-    color: #4a4a4a;
-    flex: 1;
-    text-align: center;
-}
-.h2-text, .text-input-wrapper.large-input .text-input::placeholder {
-    font-size: 40px;
-    line-height: 1.2;
-}
-
-.recipe-summary-item.unit:not(:last-child) {
-    border-right: 1px solid #bababa;
-}
-
-.recipe > .recipe-summary .recipe-interactions-wrapper {
-    display: flex;
-    flex-direction: row;
-    right: 0;
-}
-
-.recipe-summary-full-directions {
-    height: 42px;
-}
-
-.read-dir-btn {
-    display: block;
-    padding: 0;
-}
-
-.recipe-details .read-dir-btn {
-    margin-right: 1em;
-}
-
-.read-dir-btn.btn-primary {
+.website-btn {
     max-width: 760px;
-    width: 150px;
-}
-a.btn-primary, a.btn-light, a.btn-secondary {
-    line-height: 40px;
-}
-
-.read-dir-btn{
-    -webkit-font-smoothing: antialiased;
-}
-
-.recipe-summary-full-directions > span {
-    position: relative;
-    margin: 0px -25px 14px;
-    width: 150px;
-}
-.read-dir-btn > span {
+    width: 100px;
     display: block;
+    padding: 10px;
+    border-radius: 20px;
 }
 
-span{
-    padding: 0;
-    border: 0;
-    font: inherit;
-    font-size: 1em;
-    vertical-align: baseline;
-}
-
-.button, [class^="btn-"], [class*=" btn-"] {
-    letter-spacing: 0;
-    display: inline-block;
-    outline: none;
-    border: none;
-    border-radius: 3em;
-    box-sizing: border-box;
-    position: relative;
-    font-size: 14px;
-    text-decoration: none;
-    text-transform: capitalize;
-    white-space: nowrap;
+.website-btn > span{
+    display: block;
     text-align: center;
-    cursor: pointer;
-    transition: all 200ms ease;
-    padding: 11px 24px;
-    background-color: #fff;
-}
-
-.btn-primary, .recipe.exp-swap-button-styles .add-all-ingrs {
-    background-color: #0000FF;
-    color: #fff;
-}
-
-.p1-text, .pro-universal-cta .sticky-header-title {
-    font-size: 18px;
-    line-height: 1.666666666666667;
-}
-
-.recipe > .recipe-summary .recipe-details-image {
-    flex-basis: 480px;
-    flex-grow: 0;
-    flex-shrink: 1;
-    margin: auto;
-    margin-left: 40px;
-}
-
-.recipe-details-image {
-    position: relative;
-    font-size: 0;
 }
 
 .recipe-horizontal-rule {
-    margin: 64px auto 56px;
-    opacity: 0.3;
-    max-width: 978px;
-    width: 100%;
-}
-.greyscale-4 {
-    color: #e3e3e3;
+    margin: 100px auto 30px;
+    opacity: 0.4;
+    max-width: 900px;
+    width: 80%;
+    padding-right: 60px;
+    color: grey;
 }
 
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font: inherit;
-    font-size: 1em;
-    {#vertical-align: baseline;#}
-}
 hr {
     display: block;
-    unicode-bidi: isolate;
-    margin-block-start: 0.5em;
-    margin-block-end: 0.5em;
-    margin-inline-start: auto;
-    margin-inline-end: auto;
-    overflow: hidden;
-    border-style: inset;
-    border-width: 1px;
+    border-width: 3px;
+    opacity: .4;
 }
 
-.recipe .recipe-wrapper {
+.recipe-ingredient {
+    {#height: 500px;#}
+    width: 70%;
+    padding: 4rem;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
     display: flex;
-}
-
-.recipe .recipe-wrapper {
-    display: flex;
-}
-
-.recipe > .wrapper.recipe-ingredients, .recipe .recipe-info > .wrapper.recipe-ingredients {
-    margin: 42px auto 38px;
-}
-
-.recipe .ingredients-header {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    margin: -4px 0 19px;
-}
-
-.recipe > .wrapper.recipe-ingredients h3, .recipe .recipe-info > .wrapper.recipe-ingredients h3 {
+    flex-direction: column;
     margin: 0;
 }
-.h4-text {
-    font-size: 24px;
-    line-height: 1.333333333333333;
-}
-.primary-dark {
-    color: #232323;
-}
-.IngredientLine {
-    padding: 0.5em 0;
-    font-size: 16px;
-    line-height: 1.5;
+
+.recipe-instruction {
+    width: 90%;
+    padding: 4rem;
+    background-color: #FFFFFF;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
 }
 
+table{
+    margin-top: 40px;
+}
+
+tr{
+    background: rgb(255,255,255); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlNWU1ZTUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-8 */
+
+    height: 40px;
+    -webkit-box-shadow: 0 0 5px#888;
+}
+
+td{
+    height: 20px;
+    padding: 10px;
+    padding-left: 30px;
+}
 </style>
+
+
+<div class="recipe">
+    <div class="blank-block"></div>
+
+    <div class="recipe-info">
+
+        <div class="recipe-summary">
+            <h1 class="recipe-title font-bold ">{{ recipe.title }}</h1>
+            <div class="summary-item-wrapper">
+                <div class="recipe-summary-item h2-text">
+                    <span class="value font-light h2-text">
+                        {{ recipe.ingredients | length }}
+                    </span>
+                    <span class="unit font-normal p3-text">
+                        Ingredients
+                    </span>
+                </div>
+                <div class="recipe-summary-item unit h2-text">
+                    <span class="value font-light h2-text">
+                        {{ recipe.instructions | length }}
+                    </span>
+                    <span class="unit font-normal p3-text">
+                        Steps
+                    </span>
+                </div>
+                <div class="recipe-summary-item unit h2-text">
+                    <span class="value font-light h2-text">
+                        690
+                    </span>
+                    <span class="unit font-normal p3-text">
+                        Calories
+                    </span>
+                </div>
+            </div>
+            <div class="recipe-interactions-wrapper">
+                <a class="website-btn btn-primary" href="{{ recipe.url }}" title="Read Directions" aria-label="Read Directions">
+                    <span class="p3-text">Website</span>
+                </a>
+            </div>
+        </div>
+        <div class="recipe-image">
+            <img alt="Easy Roasted Tomato Soup" src="https://lh3.googleusercontent.com/UeQu1VPWsv_xY_gJo4hWtKUd7_5pZ8Etb4C-KZN69xNgJvBfcmZDj7BESMwnK6fxnjN534vjHB-vyM7uxHfZ=w640-h640-c-rw-v1-e365" class="recipe-image" data-pin-url="https://www.yummly.co.uk/recipe/Easy-Roasted-Tomato-Soup-2287716" data-pin-description="Easy Roasted Tomato Soup with Tomatoes, Garlic, Vegetable Stock, Olive Oil, Salt, Pepper, Basil." width="640" height="640" data-pin-nopin="" srcset="https://lh3.googleusercontent.com/UeQu1VPWsv_xY_gJo4hWtKUd7_5pZ8Etb4C-KZN69xNgJvBfcmZDj7BESMwnK6fxnjN534vjHB-vyM7uxHfZ=w1280-h1280-c-rw-v1-e365 2x">
+        </div>
+    </div>
+
+    <div class="recipe-horizontal-rule"><hr></div>
+
+    <div class="recipe-info">
+        <div class="recipe-ingredient">
+            <h2 class="recipe-title font-bold h2-text">Ingredients</h2>
+            <table>
+                {% for ingredient in recipe.ingredients %}
+                    <tr ><td class="p3-text">{{ ingredient }}</tr></td>
+                                     {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <div class="recipe-horizontal-rule"><hr></div>
+    <div class="recipe-info">
+        <div class="recipe-instruction">
+            <h2 class="recipe-title font-bold h2-text">Instructions</h2>
+                <table>
+                    {% for instruction in recipe.instructions %}
+                        <tr ><td class="p3-text">{{ instruction }}</tr></td>
+                                         {% endfor %}
+                </table>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
 
 {% endblock %}
 
