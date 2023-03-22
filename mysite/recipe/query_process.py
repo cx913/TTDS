@@ -129,8 +129,9 @@ def term_query(term, term_freq, doc_len, doc_num):
 
 def phrase_query(terms, term_freq, doc_len, doc_num):
     bm25_scores = {}
-    #spam
+    # term index
     for i in range(0, len(terms)-1):
+        # distance
         for j in range(1, len(terms)-i):
             if i == 0 and j == 1:
                 bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, order=False)
@@ -191,6 +192,7 @@ def tree_traverse(tree, term_freq, doc_len, doc_num):
             terms = phrase.split()
             terms = [x for x in terms if x not in stop_words]
             terms = [stemmer.stem(x) for x in terms]
+            print(terms)
             if len(terms) == 1:
                 return term_query(terms[0], term_freq, doc_len, doc_num)
             else:
@@ -218,6 +220,8 @@ def tree_traverse(tree, term_freq, doc_len, doc_num):
 
 def tree_query(query, term_freq, doc_len, doc_num):
     tree = bt.build_tree_from_query(query)
+    if tree == -1:
+        return {}
     final_scores = tree_traverse(tree, term_freq, doc_len, doc_num)
     return final_scores
 # test

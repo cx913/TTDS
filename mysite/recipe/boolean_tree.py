@@ -248,3 +248,6 @@ def build_tree_from_query(query):
         else:
             print("13")
             return -1
+
+t = build_tree_from_query('and')
+print(t)

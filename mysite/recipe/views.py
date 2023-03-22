@@ -61,16 +61,16 @@ def search_results(request):
         if filter_check == 'filter':
             for doc_id in ir_list:
                 # check if reach the limit
-                nutrition = NutritionalInfo.objects.filter(
-                     id=doc_id
-                 )
                 search_limit_count += 1
                 if search_limit_count == search_limit:
                     break
-                if len(nutrition) == 0:
+                recipe = Recipes.objects.get(
+                    id=doc_id
+                )
+                if recipe.nutrition is None:
                     continue
                 # get values
-                values = nutrition[0].nutr_values_per100g
+                values = recipe.nutrition
                 values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
                 values = values.split(',')
                 for value in values:
