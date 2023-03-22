@@ -38,13 +38,22 @@ def search_results(request):
         # low case
         query = query.lower()
         # nutrition info
-        energy = request.POST['energy']
-        fat = request.POST['fat']
-        protein = request.POST['protein']
-        salts = request.POST['salts']
-        saturates = request.POST['saturates']
-        sugars = request.POST['sugars']
-        filter_check = request.POST.get('filter', False)
+        energy_min = request.POST['energy-min']
+        fat_min = request.POST['fat-min']
+        protein_min = request.POST['protein-min']
+        salts_min = request.POST['salt-min']
+        saturates_min = request.POST['saturate-min']
+        sugars_min = request.POST['sugar-min']
+
+        energy_max = request.POST['energy-max']
+        fat_max = request.POST['fat-max']
+        protein_max = request.POST['protein-max']
+        salts_max = request.POST['salt-max']
+        saturates_max = request.POST['saturate-max']
+        sugars_max = request.POST['sugar-max']
+
+        filter_data = {}
+
 
         if query.find('title:') == 0:
             recipe = Recipes.objects.filter(
@@ -122,21 +131,21 @@ def search_results(request):
                 # first retrive
                 if limit_count == 0:
 
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = data
-                    limit_count += 1
-                else:
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = all_data | data
-                    limit_count += 1
-        return render(request, 'recipe/search_results.html', {'q': query, 'res': all_data})
+                data = Recipes.objects.filter(
+                    id=doc_id
+                )
+                all_data = data
+                limit_count += 1
+            else:
+                data = Recipes.objects.filter(
+                    id=doc_id
+                )
+                all_data = all_data | data
+                limit_count += 1
+        return render(request, 'recipe/search_results_test.html', {'q': query, 'res': all_data, 'filter':filter_data})
     else:
         query = request.POST.get('q')
-        return render(request, 'recipe/search_results.html', {})
+        return render(request, 'recipe/search_results_test.html', {})
 
 
 def show_recipe(request, recipe_id):
