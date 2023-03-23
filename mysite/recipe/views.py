@@ -133,17 +133,17 @@ def search_results(request):
                 # first retrive
                 if limit_count == 0:
 
-                data = Recipes.objects.filter(
+                    data = Recipes.objects.filter(
                     id=doc_id
-                )
-                all_data = data
-                limit_count += 1
-            else:
-                data = Recipes.objects.filter(
-                    id=doc_id
-                )
-                all_data = all_data | data
-                limit_count += 1
+                    )
+                    all_data = data
+                    limit_count += 1
+                else:
+                    data = Recipes.objects.filter(
+                        id=doc_id
+                    )
+                    all_data = all_data | data
+                    limit_count += 1
         return render(request, 'recipe/search_results_test.html', {'q': query, 'res': all_data, 'filter':filter_data})
     else:
         query = request.POST.get('q')
