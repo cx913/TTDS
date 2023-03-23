@@ -9,6 +9,7 @@ import math
 from . import query_process as qp
 from pathlib import Path
 from itertools import chain
+import random
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -25,7 +26,25 @@ with open(num_docs, "rb") as f:
 
 
 def home(request):
-    return render(request, 'recipe/home.html')
+    items = list(Recipes.objects.all().order_by('-id')[:1000])
+
+    random_items = random.sample(items, 10)
+    for data in random_items:
+        data.image = qp.url_process(data.image)
+        data.tag = ",".join([x.capitalize() for x in data.tag.replace("'", '').split(',')]).lstrip('\"').lstrip('\"')
+        if data.nutrition is None:
+            data.nutrition = 'Energy : Unknown, Fat : Unknown, Protein : Unknown, Salts : Unknown, Saturates : Unknown, Sugars : Unknown'
+        else:
+            values = data.nutrition
+            values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
+            values = values.split(',')
+            for value in values:
+                if value == '':
+                    value = '0'
+            values = [float(value) for value in values]
+            data.nutrition = 'Energy : {}, Fat : {}, Protein : {}, Salts : {}, Saturates : {}, Sugars : {}'. \
+                format(values[0], values[1], values[2], values[3], values[4], values[5])
+    return render(request, 'recipe/home.html', {'recipes': random_items})
 
 
 
@@ -69,7 +88,7 @@ def search_results(request):
             data = recipe[:200]
             for d in data:
                 d.image = qp.url_process(d.image)
-            return render(request, 'recipe/search_results_test.html', {'q': query, 'res': data})
+            return render(request, 'recipe/search_results_test.html', {'q': query,  'res': data})
 
         bm25_list = dict(
             sorted(qp.tree_query(query, term_frequency, doc_len, doc_num).items(), key=lambda kv: kv[1],

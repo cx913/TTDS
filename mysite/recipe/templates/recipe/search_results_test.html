@@ -3,6 +3,7 @@
 {% block content %}
 <div class="recipe-cards-container">
 
+{%  if res %}
 
             {% for recipe in res %}
 
@@ -17,7 +18,37 @@
 
             </div>
             {% endfor %}
+{% else %}
+    <div class="regulation-wrapper" style="width: 70%">
+    <h3> No results found.</h3>
+    <h3> It could be a wrong boolean form.</h3>
 
+
+    <h3>
+        Basic Search:</h3>
+        <ul>
+
+        <li>Proximity search: #tomato#sauce#3</li>
+        <li>Phrase search: "tomato sauce"</li>
+        <li>Normal search: tomato sauce</li>
+        <li>Boolean: tomato AND sauce, tomato NOT sauce, tomato OR sauce</li>
+            </ul>
+        <h3>    The rules of legal boolean queries are:</h3>
+        <ul>
+
+<li>Parentheses: Parentheses could only be used in pairs, and a normal query could only be
+    included in parentheses during a boolean search.</li>
+<li>Operators: Operators must have only one basic query or one valid nested boolean query on
+each side of them.
+        <ul>
+        <li>Valid: (”Yogurt Parfaits” AND (Zucchini Nut Bread)) OR #tomato#sauce#3</li>
+        <li> Invalid: (((”Yogurt Parfaits”, ”Yogurt Parfaits” AND AND #tomato#sauce#3, ”Yogurt
+    Parfaits” AND Zucchini Nut Bread</li>
+        </ul>
+        </li>
+    </ul>
+    </div>
+{% endif %}
         </div>
 
 
