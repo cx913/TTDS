@@ -77,7 +77,7 @@ def search_results(request):
         ir_list = bm25_list.keys()
 
         limit_count = 0
-        limit = 200
+        limit = 50
         # for filter
         search_limit_count = 0
         search_limit = 5000
