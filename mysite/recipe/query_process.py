@@ -105,14 +105,14 @@ def phrase_query(terms, term_freq, doc_len, doc_num):
         # distance
         for j in range(1, len(terms)-i):
             if i == 0 and j == 1:
-                bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, order=False)
+                bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, free_order=False, strict=True)
             else:
-                new_bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, order=False)
+                new_bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, free_order=False, strict=True)
                 bm25_scores = merge_dict('and', bm25_scores, new_bm25_scores)
     return bm25_scores
 
 
-def proximity_query(term1, term2, distance, term_freq, doc_len, doc_num, order=True):
+def proximity_query(term1, term2, distance, term_freq, doc_len, doc_num, free_order=True, strict=False):
     try:
         d = int(distance)
     except ValueError:
@@ -141,16 +141,28 @@ def proximity_query(term1, term2, distance, term_freq, doc_len, doc_num, order=T
         if key in inverse_index2.keys():
             for pos_1 in inverse_index1[key]:
                 for pos_2 in inverse_index2[key]:
-                    if order:
-                        if abs(pos_1 - pos_2) <= d:
-                            bm25_scores1 = bm25(term_freq[term1][key], doc_len[key], doc_freq1, doc_num)
-                            bm25_scores2 = bm25(term_freq[term2][key], doc_len[key], doc_freq2, doc_num)
-                            bm25_scores[key] = bm25_scores1 + bm25_scores2
+                    if free_order:
+                        if strict:
+                            if abs(pos_1 - pos_2) == d:
+                                bm25_scores1 = bm25(term_freq[term1][key], doc_len[key], doc_freq1, doc_num)
+                                bm25_scores2 = bm25(term_freq[term2][key], doc_len[key], doc_freq2, doc_num)
+                                bm25_scores[key] = bm25_scores1 + bm25_scores2
+                        else:
+                            if abs(pos_1 - pos_2) <= d:
+                                bm25_scores1 = bm25(term_freq[term1][key], doc_len[key], doc_freq1, doc_num)
+                                bm25_scores2 = bm25(term_freq[term2][key], doc_len[key], doc_freq2, doc_num)
+                                bm25_scores[key] = bm25_scores1 + bm25_scores2
                     else:
-                        if pos_2 - pos_1 <= d:
-                            bm25_scores1 = bm25(term_freq[term1][key], doc_len[key], doc_freq1, doc_num)
-                            bm25_scores2 = bm25(term_freq[term2][key], doc_len[key], doc_freq2, doc_num)
-                            bm25_scores[key] = bm25_scores1 + bm25_scores2
+                        if strict:
+                            if pos_2 - pos_1 == d:
+                                bm25_scores1 = bm25(term_freq[term1][key], doc_len[key], doc_freq1, doc_num)
+                                bm25_scores2 = bm25(term_freq[term2][key], doc_len[key], doc_freq2, doc_num)
+                                bm25_scores[key] = bm25_scores1 + bm25_scores2
+                        else:
+                            if pos_2 - pos_1 <= d:
+                                bm25_scores1 = bm25(term_freq[term1][key], doc_len[key], doc_freq1, doc_num)
+                                bm25_scores2 = bm25(term_freq[term2][key], doc_len[key], doc_freq2, doc_num)
+                                bm25_scores[key] = bm25_scores1 + bm25_scores2
 
     return bm25_scores
 
