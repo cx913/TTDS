@@ -35,19 +35,19 @@ def search_results(request):
         # low case
         query = query.lower()
         # nutrition info
-        energy_min = request.POST['energy-min']
-        fat_min = request.POST['fat-min']
-        protein_min = request.POST['protein-min']
-        salts_min = request.POST['salt-min']
-        saturates_min = request.POST['saturate-min']
-        sugars_min = request.POST['sugar-min']
+        energy_min = int(request.POST['energy-min'])
+        fat_min = int(request.POST['fat-min'])
+        protein_min = int(request.POST['protein-min'])
+        salts_min = int(request.POST['salt-min'])
+        saturates_min = int(request.POST['saturate-min'])
+        sugars_min = int(request.POST['sugar-min'])
 
-        energy_max = request.POST['energy-max']
-        fat_max = request.POST['fat-max']
-        protein_max = request.POST['protein-max']
-        salts_max = request.POST['salt-max']
-        saturates_max = request.POST['saturate-max']
-        sugars_max = request.POST['sugar-max']
+        energy_max = int(request.POST['energy-max'])
+        fat_max = int(request.POST['fat-max'])
+        protein_max = int(request.POST['protein-max'])
+        salts_max = int(request.POST['salt-max'])
+        saturates_max = int(request.POST['saturate-max'])
+        sugars_max = int(request.POST['sugar-max'])
 
         filter_data = {}
 
@@ -56,12 +56,20 @@ def search_results(request):
             recipe = Recipes.objects.filter(
                 title__contains=query[6:]
             )
-            return render(request, 'recipe/search_results.html', {'q': query, 'res': recipe[:200]})
+            # image url
+            data = recipe[:200]
+            for d in data:
+                d.image = qp.url_process(d.image)
+            return render(request, 'recipe/search_results_test.html', {'q': query, 'res': data})
         elif query.find('tag:') == 0:
             recipe = Recipes.objects.filter(
                 tag__contains=query[4:]
             )
-            return render(request, 'recipe/search_results.html', {'q': query, 'res': recipe[:200]})
+            # image url
+            data = recipe[:200]
+            for d in data:
+                d.image = qp.url_process(d.image)
+            return render(request, 'recipe/search_results_test.html', {'q': query, 'res': data})
 
         bm25_list = dict(
             sorted(qp.tree_query(query, term_frequency, doc_len, doc_num).items(), key=lambda kv: kv[1],
@@ -73,7 +81,7 @@ def search_results(request):
         # for filter
         search_limit_count = 0
         search_limit = 5000
-        all_data = None
+        all_data = []
         #check box
         mins = [energy_min, fat_min, protein_min, salts_min, saturates_min, sugars_min]
         maxs = [energy_max, fat_max, protein_max, salts_max, saturates_max, sugars_max]
@@ -109,39 +117,30 @@ def search_results(request):
                 if limit_count == limit:
                     break
                 # first retrive
-                if limit_count == 0:
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = data
-                    limit_count += 1
-                else:
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = all_data | data
-                    limit_count += 1
-            return render(request, 'recipe/search_results.html', {'q': query, 'res': all_data})
+                data = Recipes.objects.get(
+                    id=doc_id
+                )
+                # image url
+                data.image = qp.url_process(data.image)
+                data.tag = ",".join([x.capitalize() for x in data.tag.replace("'", '').split(',')])
+                all_data.append(data)
+                limit_count += 1
+            return render(request, 'recipe/search_results_test.html', {'q': query, 'res': all_data})
         else:
             for doc_id in ir_list:
                 # check if reach the limit
                 if limit_count == limit:
                     break
                 # first retrive
-                if limit_count == 0:
-
-                    data = Recipes.objects.filter(
+                data = Recipes.objects.get(
                     id=doc_id
-                    )
-                    all_data = data
-                    limit_count += 1
-                else:
-                    data = Recipes.objects.filter(
-                        id=doc_id
-                    )
-                    all_data = all_data | data
-                    limit_count += 1
-        return render(request, 'recipe/search_results_test.html', {'q': query, 'res': all_data, 'filter':filter_data})
+                )
+                # image url
+                data.image = qp.url_process(data.image)
+                data.tag = " , ".join([x.capitalize() for x in data.tag.replace("'", '').split(',')])
+                all_data.append(data)
+                limit_count += 1
+        return render(request, 'recipe/search_results_test.html', {'q': query, 'res': all_data, 'filter': filter_data})
     else:
         query = request.POST.get('q')
         return render(request, 'recipe/search_results_test.html', {})

@@ -2,25 +2,17 @@
 
 {% block content %}
 <div class="recipe-cards-container">
-            <div class="recipe-card">
-                <div class="image-container">
-                    <img src="http:\/\/img.sndimg.com\/food\/image\/upload\/w_512,h_512,c_fit,fl_progressive,q_95\/v1\/img\/recipes\/47\/91\/49\/picaYYmb9.jpg" alt="Recipe 1">
-                </div>
-                    <h3>Recipe 1</h3>
-                <p>Recipe 1 description</p>
-            </div>
-
 
 
             {% for recipe in res %}
 
             <div class="recipe-card" onclick="location.href='{% url 'show-recipe' recipe.id %}';" style="cursor: pointer;">
               <div class="image-container">
-                   <img src="http://www.sagarikaelectronics.com/sagarika_admin/dist/img/no-image.png" alt="image_not_found">
+                   <img src="{{ recipe.image }}" alt="image_not_found">
 
                 </div>
               <h3>{{ recipe.title }}</h3>
-              <p>{{ recipe.ingredients }}</p>
+              <p>{{ recipe.tag }}</p>
             </div>
             {% endfor %}
 

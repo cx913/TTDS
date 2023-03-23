@@ -22,7 +22,7 @@ def filter_check(mins,maxs):
 
 def url_process(raw_url):
     if raw_url is None:
-        return 'http://img.sndimg.com//food//image//upload//w_512,h_512,c_fit,fl_progressive,q_95//v1//img//recipes//47//91//49//picaYYmb9.jpg'
+        return 'https://img.sndimg.com/food/image/upload/f_auto,c_thumb,q_55,w_860,ar_3:2/v1/gk-static/gk/img/recipe-default-images/image-01.svg'
     else:
         url = raw_url.split('"')
         return url[7]
