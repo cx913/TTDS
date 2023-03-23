@@ -42,7 +42,7 @@ def home(request):
                 if value == '':
                     value = '0'
             values = [float(value) for value in values]
-            data.nutrition = 'Energy : {}, Fat : {}, Protein : {}, Salts : {}, Saturates : {}, Sugars : {}'. \
+            data.nutrition = 'Energy : {:.2f}, Fat : {:.2f}, Protein : {:.2f}, Salts : {:.2f}, Saturates : {:.2f}, Sugars : {:.2f}'. \
                 format(values[0], values[1], values[2], values[3], values[4], values[5])
     return render(request, 'recipe/home.html', {'recipes': random_items})
 
@@ -123,7 +123,7 @@ def search_results(request):
                     if value == '':
                        value = '0'
                 values = [float(value) for value in values]
-                data.nutrition = 'Energy : {}, Fat : {}, Protein : {}, Salts : {}, Saturates : {}, Sugars : {}'. \
+                data.nutrition = 'Energy : {:.2f}, Fat : {:.2f}, Protein : {:.2f}, Salts : {:.2f}, Saturates : {:.2f}, Sugars : {:.2f}'. \
                     format(values[0], values[1], values[2], values[3], values[4], values[5])
                 # test
                 f1 = qp.nutrition_test(energy_min, energy_max, values[0])
@@ -162,7 +162,7 @@ def search_results(request):
                         if value == '':
                             value = '0'
                     values = [float(value) for value in values]
-                    data.nutrition = 'Energy : {}, Fat : {}, Protein : {}, Salts : {}, Saturates : {}, Sugars : {}'.\
+                    data.nutrition = 'Energy : {:.2f}, Fat : {:.2f}, Protein : {:.2f}, Salts : {:.2f}, Saturates : {:.2f}, Sugars : {:.2f}'.\
                         format(values[0],values[1],values[2],values[3],values[4],values[5])
                 # image url
                 data.image = qp.url_process(data.image)
