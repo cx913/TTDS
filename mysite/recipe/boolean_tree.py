@@ -249,5 +249,5 @@ def build_tree_from_query(query):
             print("13")
             return -1
 
-t = build_tree_from_query('and')
-print(t)
+# t = build_tree_from_query('and')
+# print(t)

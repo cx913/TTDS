@@ -168,7 +168,7 @@ def tree_traverse(tree, term_freq, doc_len, doc_num):
                 return term_query(terms[0], term_freq, doc_len, doc_num)
             else:
                 return phrase_query(terms, term_freq, doc_len, doc_num)
-        elif tree.value.find('#') != -1:
+        elif tree.value.find('#') == 0 and tree.value.count('#') == 3:
             terms = tree.value[1:].split('#')
             terms[0] = stemmer.stem(terms[0])
             terms[1] = stemmer.stem(terms[1])
@@ -181,9 +181,11 @@ def tree_traverse(tree, term_freq, doc_len, doc_num):
             for term in terms[1:]:
                 s = merge_dict('and', s, term_query(term, term_freq, doc_len, doc_num))
             return s
-        else:
+        elif tree.value.isalpha():
             term = stemmer.stem(tree.value)
             return term_query(term, term_freq, doc_len, doc_num)
+        else:
+            return {}
     else:
         return merge_dict(tree.value, tree_traverse(tree.left, term_freq, doc_len, doc_num),
                           tree_traverse(tree.right, term_freq, doc_len, doc_num))
