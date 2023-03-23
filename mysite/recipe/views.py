@@ -31,7 +31,7 @@ def home(request):
     random_items = random.sample(items, 10)
     for data in random_items:
         data.image = qp.url_process(data.image)
-        data.tag = ",".join([x.capitalize() for x in data.tag.replace("'", '').split(',')]).lstrip('\"').lstrip('\"')
+        data.tag = ",".join([x.capitalize() for x in data.tag.replace("'", '').split(',')])
         if data.nutrition is None:
             data.nutrition = 'Energy : Unknown, Fat : Unknown, Protein : Unknown, Salts : Unknown, Saturates : Unknown, Sugars : Unknown'
         else:
