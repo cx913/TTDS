@@ -91,19 +91,21 @@ def search_results(request):
                 search_limit_count += 1
                 if search_limit_count == search_limit:
                     break
-                recipe = Recipes.objects.get(
+                data = Recipes.objects.get(
                     id=doc_id
                 )
-                if recipe.nutrition is None:
+                if data.nutrition is None:
                     continue
                 # get values
-                values = recipe.nutrition
+                values = data.nutrition
                 values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
                 values = values.split(',')
                 for value in values:
                     if value == '':
                        value = '0'
                 values = [float(value) for value in values]
+                data.nutrition = 'Energy : {}, Fat : {}, Protein : {}, Salts : {}, Saturates : {}, Sugars : {}'. \
+                    format(values[0], values[1], values[2], values[3], values[4], values[5])
                 # test
                 f1 = qp.nutrition_test(energy_min, energy_max, values[0])
                 f2 = qp.nutrition_test(fat_min, fat_max, values[1])
@@ -116,10 +118,6 @@ def search_results(request):
                     continue
                 if limit_count == limit:
                     break
-                # first retrive
-                data = Recipes.objects.get(
-                    id=doc_id
-                )
                 # image url
                 data.image = qp.url_process(data.image)
                 data.tag = ",".join([x.capitalize() for x in data.tag.replace("'", '').split(',')])
@@ -135,6 +133,18 @@ def search_results(request):
                 data = Recipes.objects.get(
                     id=doc_id
                 )
+                if data.nutrition is None:
+                    data.nutrition = 'Energy : Unknown, Fat : Unknown, Protein : Unknown, Salts : Unknown, Saturates : Unknown, Sugars : Unknown'
+                else:
+                    values = data.nutrition
+                    values = ''.join([c for c in values if c.isdigit() or c == ',' or c == '.'])
+                    values = values.split(',')
+                    for value in values:
+                        if value == '':
+                            value = '0'
+                    values = [float(value) for value in values]
+                    data.nutrition = 'Energy : {}, Fat : {}, Protein : {}, Salts : {}, Saturates : {}, Sugars : {}'.\
+                        format(values[0],values[1],values[2],values[3],values[4],values[5])
                 # image url
                 data.image = qp.url_process(data.image)
                 data.tag = " , ".join([x.capitalize() for x in data.tag.replace("'", '').split(',')])
