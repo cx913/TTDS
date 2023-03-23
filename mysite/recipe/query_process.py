@@ -105,9 +105,9 @@ def phrase_query(terms, term_freq, doc_len, doc_num):
         # distance
         for j in range(1, len(terms)-i):
             if i == 0 and j == 1:
-                bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, free_order=False, strict=True)
+                bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, free_order=False,strict=True)
             else:
-                new_bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, free_order=False, strict=True)
+                new_bm25_scores = proximity_query(terms[i], terms[j+i], j, term_freq, doc_len, doc_num, free_order=False,strict=True)
                 bm25_scores = merge_dict('and', bm25_scores, new_bm25_scores)
     return bm25_scores
 

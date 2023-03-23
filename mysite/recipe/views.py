@@ -80,7 +80,7 @@ def search_results(request):
         limit = 50
         # for filter
         search_limit_count = 0
-        search_limit = 5000
+        search_limit = 2000
         all_data = []
         #check box
         mins = [energy_min, fat_min, protein_min, salts_min, saturates_min, sugars_min]
