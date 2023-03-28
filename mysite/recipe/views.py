@@ -70,6 +70,8 @@ def search_results(request):
 
         filter_data = {}
 
+        if len(query) > 60:
+            return render(request, 'recipe/search_results_test.html', {'q': query, 'res': []})
 
         if query.find('title:') == 0:
             recipe = Recipes.objects.filter(
